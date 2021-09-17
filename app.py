@@ -286,7 +286,7 @@ def remove():
     projects = get_all(session.get("user_id"))
 
     # Get a list of all project names
-    user_projects = [i[1] for i in projects]
+    user_projects = [row[1] for row in projects]
 
     # Remove the project user selects
     if request.method == "POST":
@@ -297,10 +297,35 @@ def remove():
     return render_template('remove.html', names=user_projects)
 
 
-# Create a route for editing a project
-@app.route('/edit')
+# Create a route for picking a project for editing
+@app.route('/pick_edit', methods=["GET", "POST"])
 @login_required
-def edit():
+def pick_edit():
+    """
+    Functionality for user to pick which project they want to edit that is
+        already in their account.
+    """
+    # Check to make sure the user is already logged in
+    if not session.get("user_id"):
+        # If not logged in, redirect the user to the login page
+        return redirect("/login")
+
+    # Create a list of project names for dropdown selection
+    projects = get_all(session.get("user_id"))
+    user_projects = [row[1] for row in projects]
+
+    if request.method == "POST":
+        # Redirect user to the edit page
+        return redirect(f'/edit/{request.form.get("project")}')
+
+    # If the request method is 'GET' show the form to add a project
+    return render_template('pick_edit.html', names=user_projects)
+
+
+# Create a route for editing a project
+@app.route('/edit/<project>', methods=["GET", "POST"])
+@login_required
+def edit(project):
     """
     Functionality for user to edit a project already in their account
     """
@@ -309,7 +334,56 @@ def edit():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    return render_template('edit.html')
+    # Create a dictionary to hold all parameters needed
+    proj_dict = {
+        'user_id': None, 'name': 'name',
+        'mold_img': 'mold_img', 'res_img': 'res_img',
+        'resin_brand': 'resin_brand', 'resin_type': 'resin_type',
+        'amt': 'amount', 'unit': 'unit', 'colors': 'color',
+        'color_amts': 'color_amt', 'color_types': 'color_type',
+        'glitters': 'glitter', 'glitter_amts': 'glitter_amt',
+        'time_to_pour_mins': 'time_to_pour',
+        'notes': 'notes', 'pouring_time_mins': 'pouring_time',
+        'time_to_demold_hrs': 'demolding_time',
+        'result_scale': 'res_scale', 'start_rm_temp_f': 'start_rm_temp',
+        'end_rm_temp_f': 'end_rm_temp'
+    }
+
+    # Get the users id number
+    user_id = session.get("user_id")
+
+    # Create a list of project names for dropdown selection
+    projects = get_all(session.get("user_id"))
+    user_projects = [row[1] for row in projects]
+
+    if request.method == "POST":
+
+        #
+
+
+        # Iterate through the dictionary of project parameters
+        for key, val in proj_dict.items():
+            # Get the values from the form if they are not empty
+            if request.form.get(val) not in proj_dict[key][val]:
+                new_val = request.form.get(val)
+                proj_dict[key] = new_val
+
+            else:
+                proj_dict[key] = None
+
+        # Set the user_id parameter in the dictionary
+        proj_dict['user_id'] = user_id
+        # Add the new project to the database using function from queries.py
+        add_new_project(proj_dict)
+
+        # Display a message on the home page to let the user know their
+        #   project was successfully added to the database
+        flash('Your project has been added successfully!')
+        # Redirect user to the home page
+        return redirect('/')
+
+    # If the request method is 'GET' show the form to add a project
+    return render_template('edit.html', names=user_projects)
 
 
 # Create a route for displaying all projects
