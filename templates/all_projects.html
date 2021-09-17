@@ -5,7 +5,45 @@
 {% endblock %}
 
 {% block main %}
-
-
-
+    {% if session.user_id %}
+        <h1>All of {{ user }}'s Current Projects</h1><br>
+        <p>On this page you can find all your projects currently saved to your account.
+        Along with all details that have been entered by you for each project.
+        If you need to edit or delete any projects that are already saved, make a note
+        of the name of the project because you will need this to access the project.</p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for col in cols %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in project %}
+                    <tr>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.mold_img }}</td>
+                        <td>{{ row.resin_brand }}</td>
+                        <td>{{ row.resin_type }}</td>
+                        <td>{{ row.amount }}</td>
+                        <td>{{ row.unit }}</td>
+                        <td>{{ row.colors }}</td>
+                        <td>{{ row.color_amts }}</td>
+                        <td>{{ row.color_types }}</td>
+                        <td>{{ row.glitters }}</td>
+                        <td>{{ row.glitter_amts }}</td>
+                        <td>{{ row.time_to_pour_mins }}</td>
+                        <td>{{ row.pouring_time_mins }}</td>
+                        <td>{{ row.time_to_demold_hrs }}</td>
+                        <td>{{ row.start_rm_temp_f }}</td>
+                        <td>{{ row.end_rm_temp_f }}</td>
+                        <td>{{ row.result_scale }}</td>
+                        <td>{{ row.result_img }}</td>
+                        <td>{{ row.notes }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}
