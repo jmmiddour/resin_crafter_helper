@@ -5,7 +5,22 @@
 {% endblock %}
 
 {% block main %}
-
-
-
+    {% if session.user_id %}
+        <form action="/remove" method="post">
+            <div>
+                <label>
+                    <strong>Select the Name of the Project you want to Remove:</strong>
+                </label>
+                <select class="form-control" name="name">
+                    <option disabled selected value>Project Name</option>
+                    {% for val in names %}
+                        <option value="{{ val }}">{{ val }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <button class="btn btn-primary" type="submit">Permanently Remove Project</button>
+            <br>
+        </form>
+    {% endif %}
 {% endblock %}
