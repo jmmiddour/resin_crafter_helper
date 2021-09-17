@@ -15,30 +15,30 @@
         </p><br>
         <table class="table table-striped">
             <thead>
-                <tr>
-                    <th>Project Name</th>
-                    <th>Resin Brand</th>
-                    <th>Resin Type</th>
-                    <th>Resin Amount</th>
-                    <th>Measurement Unit</th>
-                    <th>Color(s)</th>
-                    <th>Glitter(s)</th>
-                    <th>Results Scale</th>
-                </tr>
+            <tr>
+                <th>Project Name</th>
+                <th>Resin Brand</th>
+                <th>Resin Type</th>
+                <th>Resin Amount</th>
+                <th>Measurement Unit</th>
+                <th>Color(s)</th>
+                <th>Glitter(s)</th>
+                <th>Results Scale</th>
+            </tr>
             </thead>
             <tbody>
-                {% for row in project %}
-                    <tr>
-                        <td>{{ row.name }}</td>
-                        <td>{{ row.resin_brand }}</td>
-                        <td>{{ row.resin_type }}</td>
-                        <td>{{ row.amount }}</td>
-                        <td>{{ row.unit }}</td>
-                        <td>{{ row.colors }}</td>
-                        <td>{{ row.glitters }}</td>
-                        <td>{{ row.result_scale }}</td>
-                    </tr>
-                {% endfor %}
+            {% for row in project %}
+                <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.resin_brand }}</td>
+                    <td>{{ row.resin_type }}</td>
+                    <td>{{ row.amount }}</td>
+                    <td>{{ row.unit }}</td>
+                    <td>{{ row.colors }}</td>
+                    <td>{{ row.glitters }}</td>
+                    <td>{{ row.result_scale }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     {% endif %}
