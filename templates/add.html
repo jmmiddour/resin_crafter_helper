@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add a New Project
+{% endblock %}
+
+{% block main %}
+<h2>Add a New Project to your Account</h2><br>
+<p>The only field that is required to be filed in is the <strong>Project Name</strong>. All other fields are optional.</p><hr>
+    <form action="/add" method="post">
+        <div class="form-group">
+            Project Name: * <input autofocus class="form-control" name="name" placeholder="Project Name" type="text" required style="width: 800px; text-align: center">
+        </div>
+        <div class="form-group">
+            URL for Image of Mold: <input autofocus class="form-control" name="mold_img" placeholder="Link to Mold Image" type="text" style="width: 750px; text-align: center">
+        </div><hr>
+        <h4>The Resin Used in this Project:</h4><br>
+        <div class="form-group">
+            Brand of Resin: <input autofocus class="form-control" name="resin_brand" placeholder="Resin Brand" type="text" style="width: 400px; text-align: center">
+             &nbsp; &nbsp;
+            Type of Resin: <input autofocus class="form-control" name="resin_type" placeholder="Resin Type" type="text" style="width: 280px; text-align: center">
+        </div>
+        <div class="form-group">
+            Total Amount of Resin: <input autofocus class="form-control" name="amount" placeholder="Resin Amount" type="text" style="width: 198px; text-align: center">
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <label>Unit of Measure:
+                <select autofocus class="form-control" name="unit">
+                    <option value="None" selected>Select One</option>
+                    <option value="Grams">Grams</option>
+                    <option value="Ounces">Ounces</option>
+                    <option value="Milliliters">Milliliters</option>
+                    <option value="Quart">Quart</option>
+                    <option value="Pint">Pint</option>
+                    <option value="Teaspoon">Teaspoon</option>
+                    <option value="Tablespoon">Tablespoon</option>
+                    <option value="Gallon">Gallon</option>
+                    <option value="Other">Other</option>
+                </select>
+            </label>
+        </div><hr>
+        <h4>Additives included in this Project:</h4><br>
+        <div class="form-group">
+            Color(s) (separate by commas): <input autofocus class="form-control" name="color" placeholder="Color(s)" type="text" style="width: 692px; text-align: center">
+        </div>
+        <div class="form-group">
+            Amount of Color(s) (separate by commas): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="color_amt" placeholder="Amount of Color(s)" type="text" style="width: 252px; text-align: center">
+        </div>
+        <div class="form-group">
+            Type of Color(s) (separate by commas): <input autofocus class="form-control" name="color_type" placeholder="Type of Color(s)" type="text" style="width: 638px; text-align: center">
+        </div>
+        <div class="form-group">
+            Glitter(s) (separated by commas): <input autofocus class="form-control" name="glitter" placeholder="Glitter(s)" type="text" style="width: 680px; text-align: center">
+        </div>
+        <div class="form-group">
+            Amount of Glitter(s) (separate by commas): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="glitter_amt" placeholder="Amount of Glitter(s)" type="text" style="width: 252px; text-align: center">
+        </div><hr>
+        <h4>Time involved in this Project:</h4><br>
+        <div class="form-group">
+            Time from Combining 2 parts to Pour in Minutes: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="time_to_pour" placeholder="Time until Pouring in Minutes" type="text" style="width: 235px; text-align: center">
+        </div>
+        <div class="form-group">
+            Time it took to Pour in Minutes: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="pouring_time" placeholder="Pouring Time in Minutes" type="text" style="text-align: center">
+        </div>
+        <div class="form-group">
+            Time from Pouring to De-molding in Hours: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="demolding_time" placeholder="Time to De-molding in Hours" type="text" style="width: 240px; text-align: center">
+        </div><hr>
+        <h4>Tracking Temperatures in the room during this Project:</h4><br>
+        <div class="form-group">
+            Room Temperature in Fahrenheit at Start of Project: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="start_rm_temp" placeholder="Starting Room Temp in Fahrenheit" type="text" style="width: 270px; text-align: center">
+        </div>
+        <div class="form-group">
+            Room Temperature in Fahrenheit at End of Project: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="end_rm_temp" placeholder="Ending Room Temp in Fahrenheit" type="text" style="width: 260px; text-align: center">
+        </div><hr>
+        <h4>Results for this Project:</h4><br>
+        <div class="form-group">
+            <label>Grade your Results on a Scale of 1-5 (1 being best, 5 being worse): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <select autofocus class="form-control" name="res_scale">
+                    <option value="None" selected>Select One</option>
+                    <option value="1">1 - Nailed It!</option>
+                    <option value="2">2 - Almost There</option>
+                    <option value="3">3 - Just Okay but Needs some Improvement</option>
+                    <option value="4">4 - Needs a lot of Improvement</option>
+                    <option value="5">5 - Completely Bombed it!</option>
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            Url for Image of Results: <input autofocus class="form-control" name="res_img" placeholder="Link to Results Image" type="text" style="width: 750px; text-align: center">
+        </div><hr>
+        <h4>Any Additional Notes, Comments, and/or Feedback about this Project:</h4><br>
+        <div class="form-group">
+            <textarea class="form-control" name="notes" rows="6" cols="128"></textarea>
+        </div>
+        <br>
+        <button class="btn btn-primary" type="submit">Add Project</button>
+        <br>
+    </form>
+
+{% endblock %}
