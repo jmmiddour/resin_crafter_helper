@@ -7,7 +7,8 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db_model import DB, User, Project, Details
-from queries import dup_user, add_user, get_user, get_last_ten, add_new_project, dup_proj
+from queries import dup_user, add_user, get_user_id, get_last_ten, \
+    add_new_project, dup_proj, get_all, del_rec
 from helpers import apology, login_required
 
 
@@ -61,11 +62,11 @@ def index():
     ), user_id=session.get("user_id")).one()
 
     # Get the dataframe with the list of projects for the user
-    project = get_last_ten(session.get("user_id"))
+    last_ten_projects = get_last_ten(session.get("user_id"))
 
-    print(project)
-
-    return render_template('index.html', project=project, user=first[0])
+    # Show the user the index page
+    return render_template('index.html', project=last_ten_projects,
+                           user=first[0])
 
 
 # Create the registration route
@@ -131,7 +132,8 @@ def register():
             add_user(first, last, name, hashed_pw, email_add)
 
             # Get the row where the username is in the data base
-            rows = get_user(name)
+            rows = get_user_id(name)
+            print(rows)
 
             # Ensure username exists and password is correct
             if len(rows) != 1 or not check_password_hash(
@@ -142,7 +144,7 @@ def register():
             # Remember which user has logged in
             # Stores the users "id" in the Flask session by taking the 1 and only
             #   row in the rows list and grabbing the value from the "id" column
-            session["user_id"] = rows[0]["id"]
+            session["user_id"] = rows[0]['id']
 
             # Send the user to the portfolio page
             return redirect("/")
@@ -217,46 +219,59 @@ def add():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    proj_dict = {
-        'user_id': None, 'name': 'name',
-        'mold_img': 'mold_img', 'res_img': 'res_img',
-        'resin_brand': 'resin_brand', 'resin_type': 'resin_type',
-        'amt': 'amount', 'unit': 'unit', 'colors': 'color',
-        'color_amts': 'color_amt', 'color_types': 'color_type',
-        'glitters': 'glitter', 'glitter_amts': 'glitter_amt',
-        'time_to_pour_mins': 'time_to_pour',
-        'notes': 'notes', 'pouring_time_mins': 'pouring_time',
-        'time_to_demold_hrs': 'demolding_time',
-        'result_scale': 'res_scale', 'start_rm_temp_f': 'start_rm_temp',
-        'end_rm_temp_f': 'end_rm_temp'
-    }
-
     if request.method == "POST":
+        # Create a dictionary to hold all parameters needed
+        proj_dict = {
+            'user_id': None, 'name': 'name',
+            'mold_img': 'mold_img', 'res_img': 'res_img',
+            'resin_brand': 'resin_brand', 'resin_type': 'resin_type',
+            'amt': 'amount', 'unit': 'unit', 'colors': 'color',
+            'color_amts': 'color_amt', 'color_types': 'color_type',
+            'glitters': 'glitter', 'glitter_amts': 'glitter_amt',
+            'time_to_pour_mins': 'time_to_pour',
+            'notes': 'notes', 'pouring_time_mins': 'pouring_time',
+            'time_to_demold_hrs': 'demolding_time',
+            'result_scale': 'res_scale', 'start_rm_temp_f': 'start_rm_temp',
+            'end_rm_temp_f': 'end_rm_temp'
+        }
+
+        # Get the users id number
+        user_id = session.get("user_id")
+
         # If project name is already in the data base
-        if dup_proj(request.form.get('name'), session.get("user_id")):
+        if dup_proj(request.form.get('name'), user_id):
             return apology(
-                "You have already used that project name.\nPlease try another name."
+                "You have already used\nthat project name.\n\nPlease try another name."
             )
 
         else:
+            # Iterate through the dictionary of project parameters
             for key, val in proj_dict.items():
+                # Get the values from the form if they are not empty
                 if request.form.get(val) is not None:
                     new_val = request.form.get(val)
                     proj_dict[key] = new_val
-                else:
-                    proj_dict[key] = 0
 
-            proj_dict['user_id'] = session.get("user_id")
+                else:
+                    proj_dict[key] = None
+
+            # Set the user_id parameter in the dictionary
+            proj_dict['user_id'] = user_id
+            # Add the new project to the database using function from queries.py
             add_new_project(proj_dict)
 
+            # Display a message on the home page to let the user know their
+            #   project was successfully added to the database
             flash('Your project has been added successfully!')
+            # Redirect user to the home page
             return redirect('/')
 
+    # If the request method is 'GET' show the form to add a project
     return render_template('add.html')
 
 
 # Create a route for removing a project
-@app.route('/remove')
+@app.route('/remove', methods=["GET", "POST"])
 @login_required
 def remove():
     """
@@ -267,7 +282,19 @@ def remove():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    return render_template('remove.html')
+    # Query a list of all projects on the user's account
+    projects = get_all(session.get("user_id"))
+
+    # Get a list of all project names
+    user_projects = [i[1] for i in projects]
+
+    # Remove the project user selects
+    if request.method == "POST":
+        del_rec(request.form.get('name'), session.get('user_id'))
+        flash(f'Project "{request.form.get("name")}" has been successfully removed!')
+        return redirect('/')
+
+    return render_template('remove.html', names=user_projects)
 
 
 # Create a route for editing a project
@@ -282,7 +309,7 @@ def edit():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    render_template('edit.html')
+    return render_template('edit.html')
 
 
 # Create a route for displaying all projects
@@ -297,7 +324,26 @@ def all_projects():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    render_template('all_projects.html')
+    # Get user's first name
+    first = DB.engine.execute(text(
+        'SELECT first_name FROM "user" WHERE id = :user_id'
+    ), user_id=session.get("user_id")).one()
+
+    # Query a list of all projects on the user's account
+    projects = get_all(session.get("user_id"))
+
+    # Create a list of all column names to display
+    cols = ['Project Name', 'Link to Mold Image', 'Brand of Resin',
+            'Type of Resin', 'Amount of Resin', 'Measurement Unit', 'Color(s)',
+            'Amount of Color(s)', 'Type of Color(s)', 'Glitter(s)',
+            'Amount of Glitter(s)', 'Time Until Pour in Minutes',
+            'Pouring Time in Minutes', 'Hours until De-molding',
+            'Starting Room Temp in Fahrenheit',
+            'Ending Room Temp in Fahrenheit', 'Result Scale',
+            'Link to Result Image', 'Additional Notes']
+
+    return render_template('all_projects.html', project=projects,
+                           cols=cols, user=first[0])
 
 
 # Create route for display just one project
@@ -312,7 +358,7 @@ def display():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    render_template('project.html')
+    return render_template('project.html')
 
 
 # Create a route for editing account information
@@ -327,7 +373,7 @@ def edit_act():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    render_template('edit_act.html')
+    return render_template('edit_act.html')
 
 
 # Create a route to create the database
