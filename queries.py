@@ -1,5 +1,4 @@
-import pandas
-import pandas as pd
+# import pandas as pd
 from sqlalchemy import text
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,6 +16,7 @@ def dup_user(name):
         bool: True if username already in database; False if not found
     """
     if DB.session.query(User.id).filter(User.username == name).count() > 0:
+        DB.session.close()
         return True
 
     else:
@@ -41,9 +41,10 @@ def add_user(first, last, user, hash_pass, email):
                     password=hash_pass, email=email)
     DB.session.add(new_user)
     DB.session.commit()
+    DB.session.close()
 
 
-def get_user(username):
+def get_user_id(username):
     """
         Get the row where the username is in the database
 
@@ -52,9 +53,15 @@ def get_user(username):
 
         :return:
             int : row number where the username is in the database
-        """
-    user = User.query.filter(User.username == username).one()
-    return user[0]
+    """
+    user = DB.engine.execute(
+        text("""
+        SELECT *
+        FROM "user"
+        WHERE username = :username;
+        """), username=username).all()
+    DB.session.close()
+    return user
 
 
 def dup_proj(proj_name, user_id):
@@ -64,18 +71,17 @@ def dup_proj(proj_name, user_id):
     :return:
         *bool* : True if project name already exists; False if not found
     """
-    proj_rows = DB.engine.execute(
-        text("""
-        SELECT name
-        FROM "project"
-        WHERE user_id = :user_id;
-        """), user_id=user_id).all()
+    # Get all project names by the user
+    proj_names = DB.session.query(Project.name).filter(
+        Project.user_id == user_id).all()
 
-    if proj_name in proj_rows:
-        return True
+    DB.session.close()
 
-    else:
-        return False
+    # Pull out all the names from the tuples and put them in a list
+    name = [True for i in proj_names if proj_name in i]
+
+    # Check if the project name is already used my the user
+    return True in name
 
 
 def get_last_ten(user_id):
@@ -97,6 +103,8 @@ def get_last_ten(user_id):
             ORDER BY p.id DESC
             LIMIT 10;
         """), user_id=user_id).all()
+
+    DB.session.close()
 
     return rows
 
@@ -169,6 +177,64 @@ def add_new_project(project_dict: dict):
     DB.session.add(new_details)
     # Commit the changes to the database
     DB.session.commit()
+    DB.session.close()
 
 
+def get_all(user_id):
+    """
+    Functionality to run the query to get all projects for user specified
 
+    :param
+        - user_id : int : user id of currently signed in user
+
+    :return:
+        Array with all products in user account and details
+    """
+    all_projects = DB.engine.execute(text(
+        """
+        SELECT *
+        FROM "project" p
+            JOIN "details" d ON d.project_id = p.id
+        WHERE p.user_id = :user_id;
+        """), user_id=user_id).all()
+
+    DB.session.close()
+
+    return all_projects
+
+
+def del_rec(proj_name, user_id):
+    """
+    Queries the database to remove a single record with the provide project id
+
+    :param
+        - proj_name : str : the name of the project record to be removed
+        - user_id   : int : id of the user who added the project record
+
+    :return:
+        Database with the record removed that had the given id.
+    """
+    # Get the project id from the parameters given
+    proj_id = DB.engine.execute(
+        text("""
+        SELECT id
+        FROM "project"
+        WHERE name = :name AND user_id = :user;
+        """), name=proj_name, user=user_id).one()
+
+    # Remove the project record from both tables
+    DB.engine.execute(
+        text("""
+            DELETE FROM "details"
+            WHERE project_id = :id;
+            
+            DELETE FROM "project"
+            WHERE id = :id;
+            """), id=proj_id[0])
+
+    # Commit the changes to the database
+    DB.session.commit()
+    # Close the database session
+    DB.session.close()
+
+    return
