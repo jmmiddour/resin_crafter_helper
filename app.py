@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from db_model import DB, User, Project, Details
 from queries import dup_user, add_user, get_user_id, get_last_ten, \
-    add_new_project, dup_proj, get_all, del_rec
+    add_new_project, dup_proj, get_all, del_rec, get_single, edit_project
 from helpers import apology, login_required
 
 
@@ -262,7 +262,7 @@ def add():
 
             # Display a message on the home page to let the user know their
             #   project was successfully added to the database
-            flash('Your project has been added successfully!')
+            flash(f'Your project "{request.form.get("name")}" has been added successfully!')
             # Redirect user to the home page
             return redirect('/')
 
@@ -325,7 +325,7 @@ def pick_edit():
 # Create a route for editing a project
 @app.route('/edit/<project>', methods=["GET", "POST"])
 @login_required
-def edit(project):
+def edit(project, project_id=None):
     """
     Functionality for user to edit a project already in their account
     """
@@ -336,54 +336,53 @@ def edit(project):
 
     # Create a dictionary to hold all parameters needed
     proj_dict = {
-        'user_id': None, 'name': 'name',
-        'mold_img': 'mold_img', 'res_img': 'res_img',
-        'resin_brand': 'resin_brand', 'resin_type': 'resin_type',
-        'amt': 'amount', 'unit': 'unit', 'colors': 'color',
-        'color_amts': 'color_amt', 'color_types': 'color_type',
-        'glitters': 'glitter', 'glitter_amts': 'glitter_amt',
-        'time_to_pour_mins': 'time_to_pour',
-        'notes': 'notes', 'pouring_time_mins': 'pouring_time',
-        'time_to_demold_hrs': 'demolding_time',
-        'result_scale': 'res_scale', 'start_rm_temp_f': 'start_rm_temp',
-        'end_rm_temp_f': 'end_rm_temp'
+        'id': None, 'name': None, 'mold_img': None, 'result_img': None,
+        'notes': None, 'user_id': None, 'project_id': None,
+        'resin_brand': None, 'resin_type': None, 'amount': None, 'unit': None,
+        'colors': None, 'color_amts': None, 'color_types': None,
+        'glitters': None, 'glitter_amts': None, 'time_to_pour_mins': None,
+        'pouring_time_mins': None, 'time_to_demold_hrs': None,
+        'result_scale': None, 'start_rm_temp_f': None, 'end_rm_temp_f': None
     }
 
-    # Get the users id number
-    user_id = session.get("user_id")
-
-    # Create a list of project names for dropdown selection
+    # Grab the project id from the database for the project name given
     projects = get_all(session.get("user_id"))
-    user_projects = [row[1] for row in projects]
+    project_id = [row[:1] for row in projects if project in row[1]]
+
+    # Get the details for the project name given
+    project_details = get_single(project_id[0])
+
+    # Iterate through the dictionary to add the values from the database for
+    #   the project specified
+    i = 0  # Create a counter to increment
+    for k, _ in proj_dict.items():
+        # Change the value in the dictionary to the value at the current location
+        proj_dict[k] = project_details[i]
+        i += 1  # Increment the index location value by 1
 
     if request.method == "POST":
-
-        #
-
-
         # Iterate through the dictionary of project parameters
         for key, val in proj_dict.items():
-            # Get the values from the form if they are not empty
-            if request.form.get(val) not in proj_dict[key][val]:
-                new_val = request.form.get(val)
-                proj_dict[key] = new_val
+            if key != 'id' and key != 'name' and key != 'user_id' and key != 'project_id':
+                # Get the values from the form if they are different
+                if request.form.get(key) != proj_dict[key]:
+                    new_val = request.form.get(key)
+                    proj_dict[key] = new_val
 
-            else:
-                proj_dict[key] = None
+                else:  # Otherwise, continue iterating and change nothing
+                    proj_dict[key] = proj_dict[key]
 
-        # Set the user_id parameter in the dictionary
-        proj_dict['user_id'] = user_id
         # Add the new project to the database using function from queries.py
-        add_new_project(proj_dict)
+        edit_project(proj_dict)
 
         # Display a message on the home page to let the user know their
         #   project was successfully added to the database
-        flash('Your project has been added successfully!')
+        flash(f'Your project "{project}" has been edited successfully!')
         # Redirect user to the home page
         return redirect('/')
 
     # If the request method is 'GET' show the form to add a project
-    return render_template('edit.html', names=user_projects)
+    return render_template('edit.html', name=project, details=proj_dict)
 
 
 # Create a route for displaying all projects
