@@ -5,7 +5,97 @@
 {% endblock %}
 
 {% block main %}
-
-
-
+    {% if session.user_id %}
+        <h2>Edit your Project "{{ name }}" Here!</h2><br>
+        <p><strong>Please Note:</strong><br>
+            Make sure your edits are correct before hitting submit.<br>
+            Once the submit button is clicked the changes <em><strong>can not be undone</strong></em>.</p><hr>
+        <form action="/edit/{{ name }}" method="post">
+            <div class="form-group">
+                Project Name: &nbsp; &nbsp; <input class="form-control" name="name" type="text" style="width: 800px; text-align: center"disabled value="{{ name }}">
+            </div>
+            <div class="form-group">
+                URL for Image of Mold: <input autofocus class="form-control" name="mold_img" value="{{ details['mold_img'] }}" type="text" style="width: 750px; text-align: center">
+            </div><hr>
+            <h4>The Resin Used in this Project:</h4><br>
+            <div class="form-group">
+                Brand of Resin: <input autofocus class="form-control" name="resin_brand" value="{{ details['resin_brand'] }}" type="text" style="width: 400px; text-align: center">&nbsp; &nbsp;
+                Type of Resin: <input autofocus class="form-control" name="resin_type" value="{{ details['resin_type'] }}" type="text" style="width: 280px; text-align: center">
+            </div>
+            <div class="form-group">
+                Total Amount of Resin: <input autofocus class="form-control" name="amount" value="{{ details['amt'] }}" type="text" style="width: 198px; text-align: center">
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <label>Unit of Measure:
+                    <select autofocus class="form-control" name="unit">
+                        <option value="{{ details['unit'] }}" selected>{{ details['unit'] }}</option>
+                        <option value="Grams">Grams</option>
+                        <option value="Ounces">Ounces</option>
+                        <option value="Milliliters">Milliliters</option>
+                        <option value="Quart">Quart</option>
+                        <option value="Pint">Pint</option>
+                        <option value="Teaspoon">Teaspoon</option>
+                        <option value="Tablespoon">Tablespoon</option>
+                        <option value="Gallon">Gallon</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
+            </div><hr>
+            <h4>Additives included in this Project:</h4><br>
+            <div class="form-group">
+                Color(s) (separate by commas): <input autofocus class="form-control" name="colors" value="{{ details['colors'] }}" type="text" style="width: 692px; text-align: center">
+            </div>
+            <div class="form-group">
+                Amount of Color(s) (separate by commas): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="color_amts" value="{{ details['color_amts'] }}" type="text" style="width: 252px; text-align: center">
+            </div>
+            <div class="form-group">
+                Type of Color(s) (separate by commas): <input autofocus class="form-control" name="color_types" value="{{ details['color_types'] }}" type="text" style="width: 638px; text-align: center">
+            </div>
+            <div class="form-group">
+                Glitter(s) (separated by commas): <input autofocus class="form-control" name="glitters" value="{{ details['glitters'] }}" type="text" style="width: 680px; text-align: center">
+            </div>
+            <div class="form-group">
+                Amount of Glitter(s) (separate by commas): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="glitter_amts" value="{{ details['glitter_amts'] }}" type="text" style="width: 252px; text-align: center">
+            </div><hr>
+            <h4>Time involved in this Project:</h4><br>
+            <div class="form-group">
+                Time from Combining 2 parts to Pour in Minutes: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="time_to_pour_mins" value="{{ details['time_to_pour_mins'] }}" type="text" style="width: 235px; text-align: center">
+            </div>
+            <div class="form-group">
+                Time it took to Pour in Minutes: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="pouring_time_mins" value="{{ details['pouring_time_mins'] }}" type="text" style="text-align: center">
+            </div>
+            <div class="form-group">
+                Time from Pouring to De-molding in Hours: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="time_to_demold_hrs" value="{{ details['time_to_demold_hrs'] }}" type="text" style="width: 240px; text-align: center">
+            </div><hr>
+            <h4>Tracking Temperatures in the room during this Project:</h4><br>
+            <div class="form-group">
+                Room Temperature in Fahrenheit at Start of Project: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="start_rm_temp_f" value="{{ details['start_rm_temp_f'] }}" type="text" style="width: 270px; text-align: center">
+            </div>
+            <div class="form-group">
+                Room Temperature in Fahrenheit at End of Project: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autofocus class="form-control" name="end_rm_temp_f" value="{{ details['end_rm_temp_f'] }}" type="text" style="width: 260px; text-align: center">
+            </div><hr>
+            <h4>Results for this Project:</h4><br>
+            <div class="form-group">
+                <label>Grade your Results on a Scale of 1-5 (1 being best, 5 being worse): * &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <select autofocus class="form-control" name="result_scale" required>
+                        <option value="{{ details['result_scale'] }}" selected>{{ details['result_scale'] }}</option>
+                        <option value="1 - Nailed It!">1 - Nailed It!</option>
+                        <option value="2 - Almost There">2 - Almost There</option>
+                        <option value="3 - Just Okay but Needs some Improvement">3 - Just Okay but Needs some Improvement</option>
+                        <option value="4 - Needs a lot of Improvement">4 - Needs a lot of Improvement</option>
+                        <option value="5 - Completely Bombed it!">5 - Completely Bombed it!</option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                Url for Image of Results: <input autofocus class="form-control" name="result_img" value="{{ details['res_img'] }}" type="text" style="width: 750px; text-align: center">
+            </div><hr>
+            <h4>Any Additional Notes, Comments, and/or Feedback about this Project:</h4><br>
+            <div class="form-group">
+                <textarea class="form-control" name="notes" rows="6" cols="128" >{{ details['notes'] }}</textarea>
+            </div>
+            <br>
+            <button class="btn btn-primary" type="submit">Submit Changes to my Project</button>
+            <br>
+        </form>
+    {% endif %}
 {% endblock %}
