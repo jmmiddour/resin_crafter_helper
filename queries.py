@@ -1,4 +1,6 @@
 # import pandas as pd
+from pprint import pprint
+
 from sqlalchemy import text
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -67,6 +69,10 @@ def get_user_id(username):
 def dup_proj(proj_name, user_id):
     """
     Query to verify project name does not already exist
+
+    :param
+        - proj_name : *str* : the preferred project name to be checked
+        - user_id   : *int* : the user id of the user currently logged in
 
     :return:
         *bool* : True if project name already exists; False if not found
@@ -238,3 +244,166 @@ def del_rec(proj_name, user_id):
     DB.session.close()
 
     return
+
+
+def get_single(proj_id):
+    """
+    Query to get just one single project and all its details from the database
+
+    :param
+        - proj_id : int : id number of the project needed
+
+    :return:
+        list with all the details for given project only
+    """
+    # Query the database joining the two tables with all the details
+    single = DB.engine.execute(text(
+        """
+        SELECT *
+        FROM "project" p
+            JOIN "details" d ON d.project_id = p.id
+        WHERE p.id = :id;
+        """), id=proj_id).all()
+
+    # Close the session
+    DB.session.close()
+
+    # Turn the tuple into a list
+    single_list = [i for i in single[0]]
+
+    return single_list
+
+
+def edit_project(project_dict):
+    """
+    Function to edit a project in the current user's account with all the
+        optional parameters available.
+
+    :param
+        - project_dict : *dict* : Dictionary with all of the following as its keys:
+
+            - user_id            : *int*         : currently logged in user id
+            - name               : *str*         : name of project
+            - mold_img           : *url*         : link to image of mold used
+            - res_img            : *url*         : link to image of results
+            - resin_brand        : *str*         : name of the brand of resin used
+            - resin_type         : *str*         : type of resin used
+            - amt                : *int*         : total amount of resin used
+            - unit               : *str*         : unit of measurement for resin
+            - colors             : *str or list* : color(s) separated by commas
+            - color_amts         : *str or list* : color(s) amounts separated by commas
+            - color_types        : *str or list* : color(s) types separated by commas
+            - glitters           : *str or list* : glitter(s) separated by commas
+            - glitter_amts       : *str or list* : glitter(s) amounts separated by commas
+            - time_to_pour_mins  : *int*         : time from combining to pouring in minutes
+            - notes              : *str*         : additional notes
+            - pouring_time_mins  : *int*         : total time took for all pouring in minutes
+            - time_to_demold_hrs : *float*       : time from finished pouring to de-molding in hours
+            - result_scale       : *int*         : results scale 1-5 (1 being best result)
+            - start_rm_temp_f    : *float*       : room temp at start of project in fahrenheit
+            - end_rm_temp_f      : *float*       : room temp at end of project in fahrenheit
+
+    :return:
+        Edits only the given parameters in the database
+    """
+
+    # Create new values to add to the details table based on given parameters
+    # edit_details = DB.engine.execute(
+    #     text("""
+    #         UPDATE "details"
+    #         SET resin_brand = :resin_brand, resin_type = :resin_type,
+    #             amount = :amt, unit = :unit, colors = :colors,
+    #             color_amts = :color_amts, color_types = :color_types,
+    #             glitters = :glitters, glitter_amts = :glitter_amts,
+    #             time_to_pour_mins = :time_to_pour_mins,
+    #             pouring_time_mins = :pouring_time_mins,
+    #             time_to_demold_hrs = :time_to_demold_hrs,
+    #             result_scale = :result_scale,
+    #             start_rm_temp_f = :start_rm_temp_f,
+    #             end_rm_temp_f = :end_rm_temp_f
+    #         WHERE project_id = :proj_id;
+    #         """), proj_id=project_dict['id'],
+    #     resin_brand=project_dict['resin_brand'],
+    #     resin_type=project_dict['resin_type'], amt=project_dict['amt'],
+    #     unit=project_dict['unit'], colors=project_dict['colors'],
+    #     color_amts=project_dict['color_amts'],
+    #     color_types=project_dict['color_types'],
+    #     glitters=project_dict['glitters'],
+    #     glitter_amts=project_dict['glitter_amts'],
+    #     time_to_pour_mins=project_dict['time_to_pour_mins'],
+    #     pouring_time_mins=project_dict['pouring_time_mins'],
+    #     time_to_demold_hrs=project_dict['time_to_demold_hrs'],
+    #     result_scale=project_dict['result_scale'],
+    #     start_rm_temp_f=project_dict['start_rm_temp_f'],
+    #     end_rm_temp_f=project_dict['end_rm_temp_f']
+    # )
+
+    details = Details.query.filter_by(project_id = project_dict['id']).first()
+
+    # d_to_change = ['resin_brand', 'resin_type', 'amount', 'unit', 'colors', 'color_amts',
+    #                'color_types', 'glitters', 'glitter_amts', 'time_to_pour_mins',
+    #                'pouring_time_mins', 'time_to_demold_hrs', 'result_scale',
+    #                'start_rm_temp_f', 'end_rm_temp_f']
+
+    details.resin_brand = project_dict['resin_brand']
+    details.resin_type = project_dict['resin_type']
+    details.amount = project_dict['amount']
+    details.unit = project_dict['unit']
+    details.colors = project_dict['colors']
+    details.color_amts = project_dict['color_amts']
+    details.color_types = project_dict['color_types']
+    details.glitters = project_dict['glitters']
+    details.glitter_amts = project_dict['glitter_amts']
+    details.time_to_pour_mins = project_dict['time_to_pour_mins']
+    details.pouring_time_mins = project_dict['pouring_time_mins']
+    details.time_to_demold_hrs = project_dict['time_to_demold_hrs']
+    details.result_scale = project_dict['result_scale']
+    details.start_rm_temp_f = project_dict['start_rm_temp_f']
+    details.end_rm_temp_f = project_dict['end_rm_temp_f']
+
+    project = Project.query.filter_by(id = project_dict['id']).first()
+
+    # p_to_change = ['mold_img', 'result_img', 'notes']
+
+    project.mold_img = project_dict['mold_img']
+    project.result_img = project_dict['result_img']
+    project.notes = project_dict['notes']
+
+    DB.session.commit()
+
+    # for k, v in project_dict.items():
+    #     if k in d_to_change:
+    #         details.k = project_dict[k]
+    #         print(f'k in loop: {k}\n details in loop: {details}\n  details.k in loop: {details.k}')
+    #         # DB.session.update(details.k)
+    #         DB.session.commit()
+    #
+    #     if k in p_to_change:
+    #         project.k = project_dict[k]
+    #         # DB.session.update(project.k)
+    #         DB.session.commit()
+    #
+    # pprint(project_dict)
+
+    # Add the new values to the details table
+    # DB.session.add(details)
+
+    # # Update values in the project table based on given parameters
+    # edit_proj = DB.engine.execute(
+    #     text(
+    #         """
+    #         UPDATE "project"
+    #         SET mold_img = :mold_img, result_img = :res_img, notes = :notes
+    #         WHERE id = :id;
+    #         """
+    #     ), mold_img=project_dict['mold_img'], res_img=project_dict['result_img'],
+    #     notes=project_dict['notes'], id=project_dict['id']
+    # )
+    #
+    # Add the new values to the project table
+    # DB.session.add(project)
+
+    # # Commit the changes to the database
+    # DB.session.commit()
+    # Close the session
+    DB.session.close()
