@@ -5,8 +5,18 @@
 {% endblock %}
 
 {% block main %}
+
     {% if session.user_id %}
+
+        <h2>Permanently Remove a Project from your Account</h2><br>
+
+        <p><strong>NOTE:</strong><br>Make sure you want to remove the selected project
+            before clicking the submit button.<br>
+            Once a project is removed, this action <strong><em>can not</em></strong>
+            be undone.</p><br>
+
         <form action="/remove" method="post">
+
             <div>
                 <label>
                     <strong>Select the Name of the Project you want to Remove:</strong>
@@ -17,10 +27,15 @@
                         <option value="{{ val }}">{{ val }}</option>
                     {% endfor %}
                 </select>
-            </div>
+            </div><br>
+
             <br>
-            <button class="btn btn-primary" type="submit">Permanently Remove Selected Project</button>
+            <button class="btn btn-primary" type="submit">
+                Permanently Remove Selected Project</button>
             <br>
+
         </form>
+
     {% endif %}
+
 {% endblock %}
