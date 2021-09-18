@@ -5,30 +5,54 @@
 {% endblock %}
 
 {% block main %}
+
 <h1>Welcome to The Resin Crafter's Helper</h1><hr><br>
+
 <h3>Please register for an account below!</h3><br><br>
+
     <form action="/register" method="post">
+
         <div class="form-group">
-            First Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autocomplete="off" autofocus class="form-control" name="first" placeholder="First Name" type="text">
+            First Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <input autocomplete="off" autofocus
+                   class="form-control" name="first" placeholder="First Name" type="text">
         </div>
+
         <div class="form-group">
-            Last Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input autocomplete="off" autofocus class="form-control" name="last" placeholder="Last Name" type="text">
+            Last Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <input autocomplete="off" autofocus
+                   class="form-control" name="last" placeholder="Last Name" type="text">
         </div>
+
         <div class="form-group">
-            Username: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text">
+            Username: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <input autocomplete="off" autofocus
+                   class="form-control" name="username" placeholder="Username" type="text">
         </div>
+
         <div class="form-group">
-            Password: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<input class="form-control" name="password" placeholder="Password" type="password">
+            Password: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+            <input class="form-control" name="password" placeholder="Password" type="password">
         </div>
+
         <div class="form-group">
-            Confirm Password: &nbsp;&nbsp;<input class="form-control" name="confirmation" placeholder="Confirm Your Password" type="password">
+            Confirm Password: &nbsp;&nbsp;
+            <input class="form-control" name="confirmation"
+                   placeholder="Confirm Your Password" type="password">
         </div>
+
         <div class="form-group">
-            Email Address: &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;<input class="form-control" name="email_add" placeholder="email address" type="text">
+            Email Address: &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+            <input class="form-control" name="email_add" placeholder="email address" type="text">
         </div>
+
         <br>
         <button class="btn btn-primary" type="submit">Register</button>
         <br>
+
     </form>
-<br><a href="{{url_for('login')}}">Already have an account? Login to your account here.</a><br>
+
+<br><a href="{{url_for('login')}}">Already have an account?
+    Login to your account here.</a><br>
+
 {% endblock %}
