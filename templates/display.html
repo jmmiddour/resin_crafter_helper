@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Project {{ project.name }}
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h2>Details for Project: {{ project.name }}</h2><br><hr><br>
+
+        <div id="wrapper2">
+
+            <div id="one2">
+
+                <h4>
+                    Resin Details:
+                </h4>
+
+                <p>Resin Brand: {{ project.resin_brand }}</p>
+                <p>Type of Resin: {{ project.resin_type }}</p>
+                <p>Total Amount of Resin: {{ project.amount }} {{ project.unit }}</p>
+
+            </div>
+
+            <div id="two2">
+
+                <p>Picture of Mold used for this Project</p><br>
+                <img src="{{ project.mold_img }}" alt="{{ project.name }} mold">
+
+            </div>
+
+        </div><br><hr><br>
+
+        <h4>Additives</h4><br><hr><br>
+
+        <div id="wrapper3">
+
+            <div id="one3">
+
+                <strong>
+                    Color Details:
+                </strong>
+
+                <p>Color(s): {{ project.colors }}</p>
+                <p>Type of Color(s): {{ project.color_types }}</p>
+                <p>Amount of Color(s): {{ project.color_amts }}</p>
+
+            </div>
+
+            <div id="two3">
+
+                <strong>
+                    Glitter Details:
+                </strong>
+
+                <p>Glitter(s): {{ project.glitters }}</p>
+                <p>Amount of Glitter(s): {{ project.glitter_amts }}</p>
+
+            </div>
+
+        </div><br><hr><br>
+
+        <h4>Times and Temperatures</h4><br><hr><br>
+
+        <div>
+
+            <strong>
+                Time Details:
+            </strong><br><hr><br>
+
+            <p>Time from Combining to Pouring: {{ project.time_to_pour_mins }} minutes</p>
+            <p>Time it took to Pour Entire Project: {{ project.color_types }} minutes</p>
+            <p>Time from Completing Pouring to De-molding: {{ project.color_amts }} hours</p>
+            <br><hr><br>
+
+            <strong>
+                Temperature Details:
+            </strong><br><hr><br>
+
+            <p>Glitter(s): {{ project.glitters }}</p>
+            <p>Amount of Glitter(s): {{ project.glitter_amts }}</p>
+
+        </div><br><hr><br>
+
+        <h4>Results</h4><br><hr><br>
+
+        <div id="wrapper2">
+
+            <div id="one2">
+
+                <strong>
+                    Results Score:
+                </strong>
+
+                <p>Results Score on a Scale of 1-5 (1 being Best):<br>
+                    {{ project.result_scale }}</p>
+
+            </div>
+
+            <div id="two2">
+
+                <p>Picture of the Results</p><br>
+                <img src="{{ project.result_img }}" alt="{{ project.name }} results">
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}
