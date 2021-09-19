@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit a Project
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h2>Select a Project from your Account to Display all Details</h2><br>
+
+        <form action="/select" method="post">
+
+            <p>Select which project you would like to see the details of:</p>
+
+            <select name="project" id="project_names">
+
+                <option selected disabled>Select a Project Name</option>
+
+                {% for val in names %}
+                    <option value="{{ val }}">{{ val }}</option>
+                {% endfor %}
+
+            </select><br><br>
+
+            <br>
+            <button class="btn btn-primary" type="submit">Select Project</button>
+            <br>
+
+        </form>
+
+    {% endif %}
+
+{% endblock %}
