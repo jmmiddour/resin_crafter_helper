@@ -93,3 +93,12 @@ main img
     overflow: hidden;
 }
 
+#wrapper-btn {
+    justify-content: center;
+}
+
+.btn.btn-primary {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
