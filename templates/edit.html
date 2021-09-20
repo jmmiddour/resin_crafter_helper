@@ -164,10 +164,34 @@
             <div class="form-group">
                 <textarea class="form-control" name="notes" rows="6"
                           cols="128" >{{ details['notes'] }}</textarea>
+            </div><br><br>
+
+            <div id="wrapper-btn" style="height: 70px;
+                 align-content: center;
+                 justify-content: space-between;
+                 padding-left: 10px;
+                 padding-right: 10px;">
+
+                <button class="btn btn-primary"
+                        type="button"
+                        name="cancel"
+                        onclick="window.history.back()"
+                        style="background-color: darkred;
+                        border: red; color: ghostwhite">
+                    Cancel</button>
+
+                <button class="btn btn-primary"
+                        type="reset"
+                        style="background-color: orange;
+                        color: darkblue; border: orange">
+                    Reset</button>
+
+                <button class="btn btn-primary"
+                        type="submit">
+                    Submit your Changes</button>
+
             </div>
-            <br>
-            <button class="btn btn-primary" type="submit">Submit Changes to my Project</button>
-            <br>
+
         </form>
     {% endif %}
 {% endblock %}
