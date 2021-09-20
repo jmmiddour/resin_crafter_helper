@@ -1,6 +1,3 @@
-# import pandas as pd
-from pprint import pprint
-
 from sqlalchemy import text
 
 from db_model import DB, User, Project, Details
