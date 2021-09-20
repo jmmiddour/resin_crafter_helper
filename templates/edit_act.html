@@ -6,6 +6,77 @@
 
 {% block main %}
 
+{% if session.user_id %}
 
+    <h3>Change account details below!</h3><br><br>
+
+        <form action="/edit_act" method="post">
+
+            <div class="form-group">
+                First Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <input autofocus
+                       class="form-control" name="first_name"
+                       value="{{ user.first_name }}"
+                       type="text">
+            </div>
+
+            <div class="form-group">
+                Last Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <input autofocus
+                       class="form-control"
+                       name="last_name" value="{{ user.last_name }}"
+                       type="text">
+            </div>
+
+            <div class="form-group">
+                Username: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <input class="form-control"
+                       value="{{ user.username }}"
+                       type="text" disabled>
+            </div>
+
+            <div class="form-group">
+                New Password: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                <input class="form-control"
+                       name="password"
+                       placeholder="New Password"
+                       type="password">
+            </div>
+
+            <div class="form-group">
+                Confirm New Password: &nbsp;&nbsp;
+                <input class="form-control"
+                       name="confirmation"
+                       placeholder="Confirm Your New Password"
+                       type="password">
+            </div>
+
+            <div class="form-group">
+                Email Address: &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                <input class="form-control"
+                       name="email"
+                       value="{{ user.email }}"
+                       type="text">
+            </div><br>
+
+            <div id="wrapper" style="height: 50px ">
+
+                <button class="btn btn-primary"
+                        type="button"
+                        name="cancel"
+                        onclick="window.history.back()">
+                    Cancel</button>
+
+                <button class="btn btn-primary"
+                        type="reset">Reset</button>
+
+                <button class="btn btn-primary"
+                        type="submit">Submit your Changes</button>
+
+            </div>
+
+        </form>
+
+{% endif %}
 
 {% endblock %}
