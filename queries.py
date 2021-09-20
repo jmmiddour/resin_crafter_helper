@@ -2,7 +2,6 @@
 from pprint import pprint
 
 from sqlalchemy import text
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from db_model import DB, User, Project, Details
 
