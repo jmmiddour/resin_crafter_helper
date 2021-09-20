@@ -66,6 +66,64 @@ def get_user_id(username):
     return user
 
 
+def user_details(user_id):
+    """
+    Query to get current user details from the database
+
+    :param
+        - user_id : int : id number of the user currently logged in
+
+    :return:
+        list with all the details for given user only
+    """
+    # Query the database joining the two tables with all the details
+    single = DB.engine.execute(text(
+        """
+        SELECT *
+        FROM "user" 
+        WHERE id = :id;
+        """), id=user_id).all()
+
+    # Close the session
+    DB.session.close()
+
+    # Turn the tuple into a list
+    single_list = [i for i in single[0]]
+
+    return single_list
+
+
+def edit_user(user_dict):
+    """
+    Query to edit details in the current user's account with all the
+        optional parameters available.
+
+    :param
+        - user_dict : *dict* : Dictionary with all of the following as its keys:
+
+            - id         : *int* : currently logged in user id
+            - first_name : *str* : first name of the user
+            - last_name  : *str* : last name of the user
+            - username   : *str* : username of the user - can not be changed
+            - password   : *str* : hashed user's password
+            - email      : *str* : user's email address
+
+    :return:
+        Edits only the given parameters in the database
+    """
+    user = User.query.filter_by(id = user_dict['id']).first()
+
+    user.first_name = user_dict['first_name']
+    user.last_name = user_dict['last_name']
+    user.password = user_dict['password']
+    user.email = user_dict['email']
+
+    # Commit the changes to the database
+    DB.session.commit()
+    # Close the session
+    DB.session.close()
+
+
 def dup_proj(proj_name, user_id):
     """
     Query to verify project name does not already exist
