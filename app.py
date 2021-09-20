@@ -8,7 +8,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from db_model import DB, User, Project, Details
 from queries import dup_user, add_user, get_user_id, get_last_ten, \
-    add_new_project, dup_proj, get_all, del_rec, get_single, edit_project
+    add_new_project, dup_proj, get_all, del_rec, get_single, edit_project, \
+    user_details, edit_user
 from helpers import apology, login_required
 
 
@@ -146,6 +147,11 @@ def register():
             #   row in the rows list and grabbing the value from the "id" column
             session["user_id"] = rows[0]['id']
 
+            # Display a message on the home page to let the user know their
+            #   project was successfully added to the database
+            flash(
+                f'Your registration is complete and you have been logged in successfully!'
+            )
             # Send the user to the portfolio page
             return redirect("/")
 
@@ -174,24 +180,27 @@ def login():
             return apology("must provide password", 403)
 
         # Query database for username
-        rows = DB.engine.execute(text('SELECT * FROM "user" WHERE username = :name'),
-                                 name=request.form.get("username")).all()
+        row = DB.engine.execute(
+            text('SELECT * FROM "user" WHERE username = :name'),
+            name=request.form.get("username")).all()
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]['password'], request.form.get("password")):
+        if len(row) != 1 or not check_password_hash(row[0]['password'], request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
         # Stores the users "id" in the Flask session by taking the 1 and only
         #   row in the rows list and grabbing the value from the "id" column
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = row[0]["id"]
 
+        # Display a message on the home page to let the user know their
+        #   project was successfully added to the database
+        flash(f'You have been logged in successfully!')
         # Redirect user to home page
         return redirect('/')
 
     # User reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template('login.html')
+    return render_template('login.html')
 
 
 # Create a route for the user to logout
@@ -325,7 +334,7 @@ def pick_edit():
 # Create a route for editing a project
 @app.route('/edit/<project>', methods=["GET", "POST"])
 @login_required
-def edit(project, project_id=None):
+def edit(project):
     """
     Functionality for user to edit a project already in their account
     """
@@ -419,10 +428,10 @@ def all_projects():
                            cols=cols, user=first[0])
 
 
-# Create route for display just one project
-@app.route('/display')
+# Create route to select just one project
+@app.route('/select', methods=["GET", "POST"])
 @login_required
-def display():
+def select():
     """
     Functionality to display just one project in the users account
     """
@@ -431,11 +440,63 @@ def display():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    return render_template('project.html')
+    # Create a list of project names for dropdown selection
+    projects = get_all(session.get("user_id"))
+    user_projects = [row[1] for row in projects]
+
+    if request.method == "POST":
+        # Redirect user to the edit page
+        return redirect(f'/display/{request.form.get("project")}')
+
+    # If the request method is 'GET' show the form to add a project
+    return render_template('select.html', names=user_projects)
+
+
+# Create route for display just one project
+@app.route('/display/<project>', methods=["GET", "POST"])
+@login_required
+def display(project):
+    """
+    Functionality to display just one project in the users account
+    """
+    # Check to make sure the user is already logged in
+    if not session.get("user_id"):
+        # If not logged in, redirect the user to the login page
+        return redirect("/login")
+
+    # Create a dictionary to hold all parameters needed
+    proj_dict = {
+        'id': None, 'name': None, 'mold_img': None, 'result_img': None,
+        'notes': None, 'user_id': None, 'project_id': None,
+        'resin_brand': None, 'resin_type': None, 'amount': None, 'unit': None,
+        'colors': None, 'color_amts': None, 'color_types': None,
+        'glitters': None, 'glitter_amts': None, 'time_to_pour_mins': None,
+        'pouring_time_mins': None, 'time_to_demold_hrs': None,
+        'result_scale': None, 'start_rm_temp_f': None, 'end_rm_temp_f': None
+    }
+
+    # Grab the project id from the database for the project name given
+    projects = get_all(session.get("user_id"))
+    project_id = [row[:1] for row in projects if project in row[1]]
+
+    # Get the details for the project name given
+    project_details = get_single(project_id[0])
+
+    # Iterate through the dictionary to add the values from the database for
+    #   the project specified
+    i = 0  # Create a counter to increment
+    for k, _ in proj_dict.items():
+        # Change the value in the dictionary to the value at the current location
+        proj_dict[k] = project_details[i]
+        i += 1  # Increment the index location value by 1
+
+    # print(proj_dict)
+
+    return render_template('display.html', project=proj_dict)
 
 
 # Create a route for editing account information
-@app.route('/edit_act')
+@app.route('/edit_act', methods=["GET", "POST"])
 @login_required
 def edit_act():
     """
@@ -446,7 +507,68 @@ def edit_act():
         # If not logged in, redirect the user to the login page
         return redirect("/login")
 
-    return render_template('edit_act.html')
+    # Create a dictionary to hold all parameters needed
+    user_dict = {
+        'id': None,
+        'first_name': None,
+        'last_name': None,
+        'username': None,
+        'password': None,
+        'email': None
+    }
+
+    # Grab the user information from the database
+    user = user_details(session.get("user_id"))
+
+    # Iterate through the dictionary to add the values from the database for
+    #   the project specified
+    i = 0  # Create a counter to increment
+    for k, _ in user_dict.items():
+        # Change the value in the dictionary to the value at the current location
+        user_dict[k] = user[i]
+        i += 1  # Increment the index location value by 1
+
+    print(user_dict)
+
+    if request.method == "POST":
+        # Iterate through the dictionary of project parameters
+        for key, val in user_dict.items():
+            if key != 'id' and key != 'username':
+                if key == 'password':
+                    # Get user's new password
+                    password = request.form.get('password')
+                    # Confirm matching new password
+                    conf_pass = request.form.get('confirmation')
+
+                    # If the user's passwords do not match
+                    if password != conf_pass:
+                        return apology("Your passwords do not match. Please try again!")
+
+                    # Hash the user's password to store in the database
+                    hashed_pw = generate_password_hash(password)
+
+                    # Add new hashed password to user dictionary
+                    user_dict['password'] = hashed_pw
+
+                # Get the values from the form if they are different
+                elif request.form.get(key) != user_dict[key]:
+                    user_dict[key] = request.form.get(key)
+
+                # Otherwise, continue iterating and change nothing
+                user_dict[key] = user_dict[key]
+
+        print(f'user dict in post: {user_dict}')
+
+        # Add the new project to the database using function from queries.py
+        edit_user(user_dict)
+
+        # Display a message on the home page to let the user know their
+        #   project was successfully added to the database
+        flash(f'Your account has been edited successfully!')
+        # Redirect user to the home page
+        return redirect('/')
+
+    return render_template('edit_act.html', user=user_dict)
 
 
 # Create a route to create the database
