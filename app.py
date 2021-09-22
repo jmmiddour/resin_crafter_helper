@@ -261,9 +261,6 @@ def add():
                     new_val = request.form.get(val)
                     proj_dict[key] = new_val
 
-                else:
-                    proj_dict[key] = None
-
             # Set the user_id parameter in the dictionary
             proj_dict['user_id'] = user_id
             # Add the new project to the database using function from queries.py
@@ -489,8 +486,6 @@ def display(project):
         # Change the value in the dictionary to the value at the current location
         proj_dict[k] = project_details[i]
         i += 1  # Increment the index location value by 1
-
-    # print(proj_dict)
 
     return render_template('display.html', project=proj_dict)
 
