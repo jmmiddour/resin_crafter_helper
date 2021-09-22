@@ -20,7 +20,7 @@
                     Resin Details:
                 </h4><br>
 
-                {% if project.resin_brand != None %}
+                {% if project.resin_brand != '' %}
                     <p><strong>Resin Brand:</strong><br><br>
                         {{ project.resin_brand }}</p><br>
 
@@ -30,7 +30,7 @@
 
                 {% endif %}
 
-                {% if project.resin_type != None %}
+                {% if project.resin_type != '' %}
                     <p><strong>Type of Resin:</strong><br><br>
                         {{ project.resin_type }}</p><br>
 
@@ -40,9 +40,13 @@
 
                 {% endif %}
 
-                {% if project.amount != None %}
+                {% if project.amount != '' and project.amount != 'None' %}
                     <p><strong>Total Amount of Resin:</strong><br><br>
                         {{ project.amount }} {{ project.unit }}</p><br>
+
+                {% elif project.amount != '' and project.amount == 'None' %}
+                    <p><strong>Total Amount of Resin:</strong><br><br>
+                        {{ project.amount }} No Measurement Unit Recorded</p><br>
 
                 {% else %}
                     <p><strong>Total Amount of Resin:</strong><br><br>
@@ -84,7 +88,7 @@
 
                 <strong>Color(s):</strong><br>
 
-                {% if project.colors != None %}
+                {% if project.colors != '' %}
                     {% for color in project.colors.split(',') %}
                         <ul>
                             <li>{{ color }}</li>
@@ -100,7 +104,7 @@
 
                 <strong>Color Type(s):</strong><br>
 
-                {% if project.color_types != None %}
+                {% if project.color_types != '' %}
                     {% for color_type in project.color_types.split(',') %}
                         <ul>
                             <li>{{ color_type }}</li>
@@ -116,7 +120,7 @@
 
                 <strong>Color Amount(s):</strong><br>
 
-                {% if project.color_amts != None %}
+                {% if project.color_amts != '' %}
 
                     {% for camts in project.color_amts.split(',') %}
                         <ul>
@@ -143,7 +147,7 @@
 
                 <strong>Glitter(s):</strong><br>
 
-                {% if project.glitters != None %}
+                {% if project.glitters != '' %}
                     {% for glitter in project.glitters.split(',') %}
                         <ul>
                             <li>{{ glitter }}</li>
@@ -158,7 +162,7 @@
                 {% endif %}
 
                 <strong>Amount of Glitter(s):</strong><br>
-                {% if project.glitter_amts != None %}
+                {% if project.glitter_amts != '' %}
                     {% for gamt in project.glitter_amts.split(',') %}
                         <ul>
                             <li>{{ gamt }}</li>
@@ -182,7 +186,7 @@
                 🕐 🕑 🕒 🕓 🕔 🕕 Time Details: 🕖 🕗 🕘 🕙 🕚 🕛
             </h3><br><hr><br>
 
-            {% if project.time_to_pour_mins != None %}
+            {% if project.time_to_pour_mins != '' %}
                 <strong>Time from Combining to Pouring:</strong> &nbsp;
                     {{ project.time_to_pour_mins }} minutes<br><br>
 
@@ -192,7 +196,7 @@
 
             {% endif %}
 
-            {% if project.pouring_time_mins != None %}
+            {% if project.pouring_time_mins != '' %}
                 <strong>Time it took to Pour Entire Project:</strong> &nbsp;
                     {{ project.pouring_time_mins }} minutes<br><br>
 
@@ -202,7 +206,7 @@
 
             {% endif %}
 
-            {% if project.time_to_demold_hrs != None %}
+            {% if project.time_to_demold_hrs != '' %}
                 <strong>Time from Completing Pouring to De-molding:</strong> &nbsp;
                     {{ project.time_to_demold_hrs }} hours<br>
 
@@ -219,7 +223,7 @@
                 &#127777;&#65039; &#127777;&#65039; &#127777;&#65039;
             </h3><br><hr><br>
 
-            {% if project.start_rm_temp_f != None %}
+            {% if project.start_rm_temp_f != '' %}
                 <strong>Room Temperature at the Start of Project:</strong> &nbsp;
                     {{ project.start_rm_temp_f }}&#8457;<br><br>
 
@@ -229,7 +233,7 @@
 
             {% endif %}
 
-            {% if project.end_rm_temp_f != None %}
+            {% if project.end_rm_temp_f != '' %}
                 <strong>Room Temperature at time of De-molding:</strong> &nbsp;
                     {{ project.end_rm_temp_f }}&#8457;<br>
 
@@ -253,7 +257,7 @@
                     Results Score:
                 </h4><br><br>
 
-                {% if project.result_scale != None %}
+                {% if project.result_scale != 'None' %}
                     <p><strong>Score of Results on a Scale of 1-5:</strong><br><br>
                         {{ project.result_scale }}</p>
 
@@ -282,6 +286,10 @@
                          height="90%" width="90%">
 
                 {% endif %}
+
+            </div>
+
+            <div>
 
             </div>
 
