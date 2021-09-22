@@ -8,101 +8,280 @@
 
     {% if session.user_id %}
 
-        <h2>Details for Project: {{ project.name }}</h2><br><hr><br>
+    <h2>&#x1F4DD; &#x1F4DD; &#x1F4DD;
+        Details for Project <strong>{{ project.name }}</strong>
+        &#x1F4DD; &#x1F4DD; &#x1F4DD;</h2><br><hr><br>
 
-        <div id="wrapper2">
+        <div id="wrapper-display1">
 
-            <div id="one2">
+            <div class="col-1-of-2">
 
                 <h4>
                     Resin Details:
-                </h4>
+                </h4><br>
 
-                <p>Resin Brand: {{ project.resin_brand }}</p>
-                <p>Type of Resin: {{ project.resin_type }}</p>
-                <p>Total Amount of Resin: {{ project.amount }} {{ project.unit }}</p>
+                {% if project.resin_brand != None %}
+                    <p><strong>Resin Brand:</strong><br><br>
+                        {{ project.resin_brand }}</p><br>
+
+                {% else %}
+                    <p><strong>Resin Brand:</strong><br><br>
+                        None Recorded</p><br>
+
+                {% endif %}
+
+                {% if project.resin_type != None %}
+                    <p><strong>Type of Resin:</strong><br><br>
+                        {{ project.resin_type }}</p><br>
+
+                {% else %}
+                    <p><strong>Type of Resin:</strong><br><br>
+                        None Recorded</p><br>
+
+                {% endif %}
+
+                {% if project.amount != None %}
+                    <p><strong>Total Amount of Resin:</strong><br><br>
+                        {{ project.amount }} {{ project.unit }}</p><br>
+
+                {% else %}
+                    <p><strong>Total Amount of Resin:</strong><br><br>
+                        None Recorded</p><br>
+
+                {% endif %}
 
             </div>
 
-            <div id="two2">
+            <div class="col-2-of-2">
 
-                <p>Picture of Mold used for this Project</p><br>
-                <img src="{{ project.mold_img }}" alt="{{ project.name }} mold">
+                <p style="align-self: center"><strong>
+                    Image of Mold used for this Project
+                </strong></p>
+
+                {% if project.mold_img == '' %}
+                    <img alt="No Image Provided"
+                         src="https://api.memegen.link/images/custom/No_Image_was_Provided/If_you_would_like_to_add_your_image,_please_edit_this_project_and_add_the_link_to_the_image_of_your_mold.jpg?background=https://tinyurl.com/hnbxurmv&token=st3a6gbnvcmhe3xggy2w&watermark=memecomplete.com"
+                         width="90%" height="90%">
+
+                {% else %}
+                    <img src="{{ project.mold_img }}"
+                         alt="{{ project.name }} mold image"
+                         height="90%" width="90%">
+
+                {% endif %}
 
             </div>
 
         </div><br><hr><br>
 
-        <h4>Additives</h4><br><hr><br>
+        <h3> &#10133; &#10133; &#10133; Additives &#10133; &#10133; &#10133; </h3><br><hr><br>
 
-        <div id="wrapper3">
+        <div id="wrapper-display2">
 
-            <div id="one3">
+            <div class="col-1-of-2">
 
-                <strong>
-                    Color Details:
-                </strong>
+                <h4>Color Details:</h4><br>
 
-                <p>Color(s): {{ project.colors }}</p>
-                <p>Type of Color(s): {{ project.color_types }}</p>
-                <p>Amount of Color(s): {{ project.color_amts }}</p>
+                <strong>Color(s):</strong><br>
+
+                {% if project.colors != None %}
+                    {% for color in project.colors.split(',') %}
+                        <ul>
+                            <li>{{ color }}</li>
+                        </ul>
+                    {% endfor %}<br>
+
+                {% else %}
+                    <ul>
+                        <li>None Recorded</li>
+                    </ul>
+
+                {% endif %}
+
+                <strong>Color Type(s):</strong><br>
+
+                {% if project.color_types != None %}
+                    {% for color_type in project.color_types.split(',') %}
+                        <ul>
+                            <li>{{ color_type }}</li>
+                        </ul>
+                    {% endfor %}<br>
+
+                {% else %}
+                    <ul>
+                        <li>None Recorded</li>
+                    </ul>
+
+                {% endif %}
+
+                <strong>Color Amount(s):</strong><br>
+
+                {% if project.color_amts != None %}
+
+                    {% for camts in project.color_amts.split(',') %}
+                        <ul>
+                            <li>{{ camts }}</li>
+                        </ul>
+                    {% endfor %}<br>
+
+                {% else %}
+                    <ul>
+                        <li>None Recorded</li>
+                    </ul>
+
+                {% endif %}
 
             </div>
 
-            <div id="two3">
+            <div class="col-2-of-2"
+                 style="align-items: flex-start;
+                 justify-content: flex-start">
 
-                <strong>
+                <h4>
                     Glitter Details:
-                </strong>
+                </h4><br>
 
-                <p>Glitter(s): {{ project.glitters }}</p>
-                <p>Amount of Glitter(s): {{ project.glitter_amts }}</p>
+                <strong>Glitter(s):</strong><br>
+
+                {% if project.glitters != None %}
+                    {% for glitter in project.glitters.split(',') %}
+                        <ul>
+                            <li>{{ glitter }}</li>
+                        </ul>
+                    {% endfor %}<br>
+
+                {% else %}
+                    <ul>
+                        <li>None Recorded</li>
+                    </ul>
+
+                {% endif %}
+
+                <strong>Amount of Glitter(s):</strong><br>
+                {% if project.glitter_amts != None %}
+                    {% for gamt in project.glitter_amts.split(',') %}
+                        <ul>
+                            <li>{{ gamt }}</li>
+                        </ul>
+                    {% endfor %}<br>
+
+                {% else %}
+                    <ul>
+                        <li>None Recorded</li>
+                    </ul>
+
+                {% endif %}
 
             </div>
 
         </div><br><hr><br>
-
-        <h4>Times and Temperatures</h4><br><hr><br>
 
         <div>
 
-            <strong>
-                Time Details:
-            </strong><br><hr><br>
+            <h3>
+                🕐 🕑 🕒 🕓 🕔 🕕 Time Details: 🕖 🕗 🕘 🕙 🕚 🕛
+            </h3><br><hr><br>
 
-            <p>Time from Combining to Pouring: {{ project.time_to_pour_mins }} minutes</p>
-            <p>Time it took to Pour Entire Project: {{ project.color_types }} minutes</p>
-            <p>Time from Completing Pouring to De-molding: {{ project.color_amts }} hours</p>
+            {% if project.time_to_pour_mins != None %}
+                <strong>Time from Combining to Pouring:</strong> &nbsp;
+                    {{ project.time_to_pour_mins }} minutes<br><br>
+
+            {% else %}
+                <strong>Time from Combining to Pouring:</strong> &nbsp;
+                    None Recorded<br><br>
+
+            {% endif %}
+
+            {% if project.pouring_time_mins != None %}
+                <strong>Time it took to Pour Entire Project:</strong> &nbsp;
+                    {{ project.pouring_time_mins }} minutes<br><br>
+
+            {% else %}
+                <strong>Time it took to Pour Entire Project:</strong> &nbsp;
+                    None Recorded<br><br>
+
+            {% endif %}
+
+            {% if project.time_to_demold_hrs != None %}
+                <strong>Time from Completing Pouring to De-molding:</strong> &nbsp;
+                    {{ project.time_to_demold_hrs }} hours<br>
+
+            {% else %}
+                <strong>Time from Completing Pouring to De-molding:</strong> &nbsp;
+                    None Recorded<br><br>
+
+            {% endif %}
             <br><hr><br>
 
-            <strong>
+            <h3>
+                &#127777;&#65039; &#127777;&#65039; &#127777;&#65039;
                 Temperature Details:
-            </strong><br><hr><br>
+                &#127777;&#65039; &#127777;&#65039; &#127777;&#65039;
+            </h3><br><hr><br>
 
-            <p>Glitter(s): {{ project.glitters }}</p>
-            <p>Amount of Glitter(s): {{ project.glitter_amts }}</p>
+            {% if project.start_rm_temp_f != None %}
+                <strong>Room Temperature at the Start of Project:</strong> &nbsp;
+                    {{ project.start_rm_temp_f }}&#8457;<br><br>
+
+            {% else %}
+                <strong>Room Temperature at the Start of Project:</strong> &nbsp;
+                    None Recorded<br><br>
+
+            {% endif %}
+
+            {% if project.end_rm_temp_f != None %}
+                <strong>Room Temperature at time of De-molding:</strong> &nbsp;
+                    {{ project.end_rm_temp_f }}&#8457;<br>
+
+            {% else %}
+                <strong>Room Temperature at time of De-molding:</strong> &nbsp;
+                None Recorded<br><br>
+
+            {% endif %}
 
         </div><br><hr><br>
 
-        <h4>Results</h4><br><hr><br>
+        <h3>&#127881; &#127881; &#127881;
+            Results &#127881; &#127881; &#127881;
+        </h3><br><hr><br>
 
-        <div id="wrapper2">
+        <div id="wrapper-display3">
 
-            <div id="one2">
+            <div class="col-1-of-2" style="justify-content: center">
 
-                <strong>
+                <h4>
                     Results Score:
-                </strong>
+                </h4><br><br>
 
-                <p>Results Score on a Scale of 1-5 (1 being Best):<br>
-                    {{ project.result_scale }}</p>
+                {% if project.result_scale != None %}
+                    <p><strong>Score of Results on a Scale of 1-5:</strong><br><br>
+                        {{ project.result_scale }}</p>
+
+                {% else %}
+                    <strong>Score of Results on a Scale of 1-5:</strong> &nbsp;
+                    None Recorded<br><br>
+
+                {% endif %}
 
             </div>
 
-            <div id="two2">
+            <div class="col-2-of-2">
 
-                <p>Picture of the Results</p><br>
-                <img src="{{ project.result_img }}" alt="{{ project.name }} results">
+                <p style="align-self: center"><strong>
+                    Image of Results for this Project
+                </strong></p>
+
+                {% if project.result_img == '' %}
+                    <img alt="No Image Provided"
+                         src="https://api.memegen.link/images/custom/No_Image_was_Provided/If_you_would_like_to_add_your_image,_please_edit_this_project_and_add_the_link_to_the_image_of_your_mold.jpg?background=https://tinyurl.com/hnbxurmv&token=st3a6gbnvcmhe3xggy2w&watermark=memecomplete.com"
+                         width="90%" height="90%">
+
+                {% else %}
+                    <img src="{{ project.result_img }}"
+                         alt="{{ project.name }} results image"
+                         height="90%" width="90%">
+
+                {% endif %}
 
             </div>
 
