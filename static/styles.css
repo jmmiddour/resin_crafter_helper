@@ -52,36 +52,41 @@ main img
     max-width: 100%;
 }
 
-/*.form {*/
-/*    display: block;*/
-/*    align-content: center;*/
-/*    text-align: left;*/
-/*}*/
-
-/*.form-group {*/
-/*    display: flex;*/
-/*    justify-content: space-between;*/
-/*    align-items: center;*/
-/*    text-align-last: right;*/
-/*}*/
-
-/*.form-control {*/
-/*    display: flex;*/
-/*    align-self: start;*/
-/*}*/
-
-/*.form-control-stretch {*/
-/*    display: marker;*/
-/*    text-align: left;*/
-/*    text-align-last: right;*/
-/*    justify-content: space-between;*/
-/*}*/
-
 #wrapper {
     display: flex;
     height: 175px;
     text-align: left;
     padding-left: 250px;
+    justify-content: space-evenly;
+}
+
+#wrapper-display1 {
+    display: flex;
+    text-align: left;
+    flex-direction: row;
+    align-content: flex-start;
+    align-items: stretch;
+    height: 500px;
+    justify-content: space-evenly;
+}
+
+#wrapper-display2 {
+    display: flex;
+    text-align: left;
+    flex-direction: row;
+    align-content: flex-start;
+    align-items: stretch;
+    height: auto;
+    justify-content: space-evenly;
+}
+
+#wrapper-display3 {
+    display: flex;
+    text-align: left;
+    flex-direction: row;
+    align-content: flex-start;
+    align-items: stretch;
+    height: 500px;
     justify-content: space-evenly;
 }
 
@@ -95,6 +100,30 @@ main img
 
 #wrapper-btn {
     justify-content: center;
+}
+
+.col-1-of-2 {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    align-content: flex-end;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-right: 30px;
+}
+
+.col-2-of-2 {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    align-content: flex-start;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding-left: 30px;
+}
+
+.col-mid {
+    text-align: center;
 }
 
 .btn.btn-primary {
