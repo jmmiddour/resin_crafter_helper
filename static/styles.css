@@ -10,7 +10,7 @@ nav .navbar-brand
 /* Colors for brand */
 nav .navbar-brand .blue
 {
-    color: #537fbe;
+    color: cornflowerblue;
 }
 nav .navbar-brand .red
 {
@@ -18,7 +18,7 @@ nav .navbar-brand .red
 }
 nav .navbar-brand .yellow
 {
-    color: #f5b82e;
+    color: darkorange;
 }
 nav .navbar-brand .green
 {
@@ -65,9 +65,10 @@ main img
     text-align: left;
     flex-direction: row;
     align-content: flex-start;
-    align-items: stretch;
     height: 500px;
     justify-content: space-evenly;
+    color: cornflowerblue;
+    font-size: large;
 }
 
 #wrapper-display2 {
@@ -75,19 +76,41 @@ main img
     text-align: left;
     flex-direction: row;
     align-content: flex-start;
-    align-items: stretch;
     height: auto;
     justify-content: space-evenly;
+    color: #ea433b;
+    font-size: large;
 }
 
 #wrapper-display3 {
+    display: block;
+    text-align: center;
+    flex-direction: column;
+    align-content: space-between;
+    justify-content: space-evenly;
+    color: darkorange;
+    font-size: large;
+}
+
+#wrapper-display4 {
+    display: block;
+    text-align: center;
+    flex-direction: column;
+    align-content: space-between;
+    justify-content: space-evenly;
+    color: #2e944b;
+    font-size: large;
+}
+
+#wrapper-display5 {
     display: flex;
     text-align: left;
     flex-direction: row;
     align-content: flex-start;
-    align-items: stretch;
     height: 500px;
     justify-content: space-evenly;
+    color: cornflowerblue;
+    font-size: large;
 }
 
 #wrapper div {
