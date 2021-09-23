@@ -109,14 +109,14 @@
                         <ul>
                             <li>{{ color }}</li>
                         </ul>
-                    {% endfor %}<br>
+                    {% endfor %}
 
                 {% else %}
                     <ul>
                         <li>None Recorded</li>
                     </ul>
 
-                {% endif %}
+                {% endif %}<br>
 
                 <h5>Color Type(s):</h5><br>
 
@@ -132,7 +132,7 @@
                         <li>None Recorded</li>
                     </ul>
 
-                {% endif %}
+                {% endif %}<br>
 
                 <h5>Color Amount(s):</h5><br>
 
@@ -142,14 +142,14 @@
                         <ul>
                             <li>{{ camts }}</li>
                         </ul>
-                    {% endfor %}<br>
+                    {% endfor %}
 
                 {% else %}
                     <ul>
                         <li>None Recorded</li>
                     </ul>
 
-                {% endif %}
+                {% endif %}<br>
 
             </div>
 
@@ -164,7 +164,23 @@
                         <ul>
                             <li>{{ glitter }}</li>
                         </ul>
-                    {% endfor %}<br>
+                    {% endfor %}
+
+                {% else %}
+                    <ul>
+                        <li>None Recorded</li>
+                    </ul>
+
+                {% endif %}<br>
+
+                <h5>Glitter Type(s):</h5><br>
+
+                {% if project.color_types != '' %}
+                    {% for glitter_type in project.glitter_types.split(',') %}
+                        <ul>
+                            <li>{{ glitter_type }}</li>
+                        </ul>
+                    {% endfor %}
 
                 {% else %}
                     <ul>
@@ -179,14 +195,14 @@
                         <ul>
                             <li>{{ gamt }}</li>
                         </ul>
-                    {% endfor %}<br>
+                    {% endfor %}
 
                 {% else %}
                     <ul>
                         <li>None Recorded</li>
                     </ul>
 
-                {% endif %}
+                {% endif %}<br>
 
             </div>
 
