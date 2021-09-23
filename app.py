@@ -5,6 +5,7 @@ from sqlalchemy import text
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+from base64 import b64encode
 
 from db_model import DB, User, Project, Details
 from queries import dup_user, add_user, get_user_id, get_last_ten, \
@@ -236,8 +237,8 @@ def add():
             'resin_brand': 'resin_brand', 'resin_type': 'resin_type',
             'amt': 'amount', 'unit': 'unit', 'colors': 'color',
             'color_amts': 'color_amt', 'color_types': 'color_type',
-            'glitters': 'glitter', 'glitter_amts': 'glitter_amt',
-            'time_to_pour_mins': 'time_to_pour',
+            'glitters': 'glitter', 'glitter_types': 'glitter_types',
+            'glitter_amts': 'glitter_amt', 'time_to_pour_mins': 'time_to_pour',
             'notes': 'notes', 'pouring_time_mins': 'pouring_time',
             'time_to_demold_hrs': 'demolding_time',
             'result_scale': 'res_scale', 'start_rm_temp_f': 'start_rm_temp',
@@ -256,10 +257,23 @@ def add():
         else:
             # Iterate through the dictionary of project parameters
             for key, val in proj_dict.items():
+                # Check if the key is the mold_img,
+                #   because it needs to be added differently
+                if key == 'mold_img' and request.form.get(
+                        'mold_img') is not None:
+                    mold_pic = request.files['mold_img']
+                    proj_dict[key] = b64encode(mold_pic.read()).decode('utf-8')
+
+                # Check if the key is the result_img,
+                #   because it needs to be added differently
+                elif key == 'result_img' and request.form.get(
+                        'result_img') is not None:
+                    res_pic = request.files['result_img']
+                    proj_dict[key] = b64encode(res_pic.read()).decode('utf-8')
+
                 # Get the values from the form if they are not empty
-                if request.form.get(val) is not None:
-                    new_val = request.form.get(val)
-                    proj_dict[key] = new_val
+                elif request.form.get(val) is not None:
+                    proj_dict[key] = request.form.get(val)
 
             # Set the user_id parameter in the dictionary
             proj_dict['user_id'] = user_id
@@ -346,9 +360,10 @@ def edit(project):
         'notes': None, 'user_id': None, 'project_id': None,
         'resin_brand': None, 'resin_type': None, 'amount': None, 'unit': None,
         'colors': None, 'color_amts': None, 'color_types': None,
-        'glitters': None, 'glitter_amts': None, 'time_to_pour_mins': None,
-        'pouring_time_mins': None, 'time_to_demold_hrs': None,
-        'result_scale': None, 'start_rm_temp_f': None, 'end_rm_temp_f': None
+        'glitters': None, 'glitter_types': None, 'glitter_amts': None,
+        'time_to_pour_mins': None, 'pouring_time_mins': None,
+        'time_to_demold_hrs': None, 'result_scale': None,
+        'start_rm_temp_f': None, 'end_rm_temp_f': None
     }
 
     # Grab the project id from the database for the project name given
@@ -370,8 +385,26 @@ def edit(project):
         # Iterate through the dictionary of project parameters
         for key, val in proj_dict.items():
             if key != 'id' and key != 'name' and key != 'user_id' and key != 'project_id':
+                # Check if the key is the mold_img,
+                #   because it needs to be handled differently
+                if key == 'mold_img':
+                    mold_pic = b64encode(
+                        request.files['mold_img'].read()).decode('utf-8')
+
+                    if mold_pic != proj_dict[key]:
+                        proj_dict[key] = mold_pic
+
+                # Check if the key is the result_img,
+                #   because it needs to be added differently
+                elif key == 'result_img':
+                    res_pic = b64encode(
+                        request.files['result_img'].read()).decode('utf-8')
+
+                    if res_pic != proj_dict[key]:
+                        proj_dict[key] = res_pic
+
                 # Get the values from the form if they are different
-                if request.form.get(key) != proj_dict[key]:
+                elif request.form.get(key) != proj_dict[key]:
                     new_val = request.form.get(key)
                     proj_dict[key] = new_val
 
@@ -415,11 +448,12 @@ def all_projects():
     cols = ['Project Name', 'Link to Mold Image', 'Brand of Resin',
             'Type of Resin', 'Amount of Resin', 'Measurement Unit', 'Color(s)',
             'Amount of Color(s)', 'Type of Color(s)', 'Glitter(s)',
-            'Amount of Glitter(s)', 'Time Until Pour in Minutes',
-            'Pouring Time in Minutes', 'Hours until De-molding',
-            'Starting Room Temp in Fahrenheit',
+            'Type of Glitter(s)', 'Amount of Glitter(s)',
+            'Time Until Pour in Minutes', 'Pouring Time in Minutes',
+            'Hours until De-molding', 'Starting Room Temp in Fahrenheit',
             'Ending Room Temp in Fahrenheit', 'Result Scale',
-            'Link to Result Image', 'Additional Notes']
+            'Link to Result Image', 'Additional Notes'
+            ]
 
     return render_template('all_projects.html', project=projects,
                            cols=cols, user=first[0])
@@ -467,9 +501,10 @@ def display(project):
         'notes': None, 'user_id': None, 'project_id': None,
         'resin_brand': None, 'resin_type': None, 'amount': None, 'unit': None,
         'colors': None, 'color_amts': None, 'color_types': None,
-        'glitters': None, 'glitter_amts': None, 'time_to_pour_mins': None,
-        'pouring_time_mins': None, 'time_to_demold_hrs': None,
-        'result_scale': None, 'start_rm_temp_f': None, 'end_rm_temp_f': None
+        'glitters': None, 'glitter_types': None, 'glitter_amts': None,
+        'time_to_pour_mins': None, 'pouring_time_mins': None,
+        'time_to_demold_hrs': None, 'result_scale': None,
+        'start_rm_temp_f': None, 'end_rm_temp_f': None
     }
 
     # Grab the project id from the database for the project name given
