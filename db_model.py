@@ -36,17 +36,17 @@ class Project(DB.Model):
 
         - *id*: auto populated for each new project created
         - *name*: name the user entered for the project
-        - *mold_img*: link to user's image of mold used for project
-        - *result_img*: link to user's image of the resulting project
+        - *mold_img*: BLOB data for image of mold used for project
+        - *result_img*: BLOB data for image of the resulting project
         - *notes*: any additional notes user entered
         - *user_id*: many-to-one relationship to the user table - links to the user who created the project
     """
-    id = DB.Column(DB.Integer(), primary_key=True)
-    name = DB.Column(DB.String(), nullable=False)
-    mold_img = DB.Column(DB.String())
-    result_img = DB.Column(DB.String())
-    notes = DB.Column(DB.String())
-    user_id = DB.Column(DB.Integer(), DB.ForeignKey('user.id'), nullable=False)
+    id = DB.Column(DB.Integer, primary_key=True)
+    name = DB.Column(DB.String, nullable=False)
+    mold_img = DB.Column(DB.Text)
+    result_img = DB.Column(DB.Text)
+    notes = DB.Column(DB.String)
+    user_id = DB.Column(DB.Integer, DB.ForeignKey('user.id'), nullable=False)
     user = DB.relationship('User', backref=DB.backref('project', lazy=True))
 
     def __repr__(self):
@@ -67,6 +67,7 @@ class Details(DB.Model):
         - *color_amts*: list of the amounts of each color the user used
         - *color_types*: list of the type(s) of colorant the user used
         - *glitters*: list of the glitters the user used in the project
+        - *glitter_types*: list of the type(s) of glitters the user used
         - *glitter_amts*: list of the amounts of each glitter used
         - *time_to_pour_mins*: the time from combining to pouring into mold in minutes
         - *pouring_time_mins*: the time it took to pour all the resin in minutes
@@ -77,21 +78,22 @@ class Details(DB.Model):
     """
     project_id = DB.Column(DB.Integer, DB.ForeignKey('project.id'), primary_key=True, nullable=False)
     id = DB.relationship('Project', backref=DB.backref('details', lazy=True))
-    resin_brand = DB.Column(DB.String())
-    resin_type = DB.Column(DB.String())
-    amount = DB.Column(DB.String())
-    unit = DB.Column(DB.String())
-    colors = DB.Column(DB.String())
-    color_amts = DB.Column(DB.String())
-    color_types = DB.Column(DB.String())
-    glitters = DB.Column(DB.String())
-    glitter_amts = DB.Column(DB.String())
-    time_to_pour_mins = DB.Column(DB.String())
-    pouring_time_mins = DB.Column(DB.String())
-    time_to_demold_hrs = DB.Column(DB.String())
-    result_scale = DB.Column(DB.String())
-    start_rm_temp_f = DB.Column(DB.String())
-    end_rm_temp_f = DB.Column(DB.String())
+    resin_brand = DB.Column(DB.String)
+    resin_type = DB.Column(DB.String)
+    amount = DB.Column(DB.String)
+    unit = DB.Column(DB.String)
+    colors = DB.Column(DB.String)
+    color_amts = DB.Column(DB.String)
+    color_types = DB.Column(DB.String)
+    glitters = DB.Column(DB.String)
+    glitter_types = DB.Column(DB.String)
+    glitter_amts = DB.Column(DB.String)
+    time_to_pour_mins = DB.Column(DB.String)
+    pouring_time_mins = DB.Column(DB.String)
+    time_to_demold_hrs = DB.Column(DB.String)
+    result_scale = DB.Column(DB.String)
+    start_rm_temp_f = DB.Column(DB.String)
+    end_rm_temp_f = DB.Column(DB.String)
 
     def __repr__(self):
         return '<Details %r>' % self.project_id
