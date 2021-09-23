@@ -156,10 +156,9 @@ def get_last_ten(user_id):
         text("""
             SELECT p.name, d.resin_brand, d.resin_type, d.amount, d.unit,
                 d.colors, d.glitters, d.result_scale
-            FROM "user" u
-                JOIN "project" p ON p.user_id = u.id
+            FROM "project" p
                 JOIN "details" d ON d.project_id = p.id
-            WHERE u.id = :user_id
+            WHERE p.user_id = :user_id
             ORDER BY p.id DESC
             LIMIT 10;
         """), user_id=user_id).all()
@@ -186,10 +185,11 @@ def add_new_project(project_dict: dict):
             - amt                : *int*         : total amount of resin used
             - unit               : *str*         : unit of measurement for resin
             - colors             : *str or list* : color(s) separated by commas
-            - color_amts         : *str or list* : color(s) amounts separated by commas
-            - color_types        : *str or list* : color(s) types separated by commas
+            - color_amts         : *str or list* : color amount(s) separated by commas
+            - color_types        : *str or list* : color type(s) separated by commas
             - glitters           : *str or list* : glitter(s) separated by commas
-            - glitter_amts       : *str or list* : glitter(s) amounts separated by commas
+            - glitter_types      : *str or list* : glitter type(s) separated by commas
+            - glitter_amts       : *str or list* : glitter amount(s) separated by commas
             - time_to_pour_mins  : *int*         : time from combining to pouring in minutes
             - notes              : *str*         : additional notes
             - pouring_time_mins  : *int*         : total time took for all pouring in minutes
@@ -226,6 +226,7 @@ def add_new_project(project_dict: dict):
                           color_amts=project_dict['color_amts'],
                           color_types=project_dict['color_types'],
                           glitters=project_dict['glitters'],
+                          glitter_types=project_dict['glitter_types'],
                           glitter_amts=project_dict['glitter_amts'],
                           time_to_pour_mins=project_dict['time_to_pour_mins'],
                           pouring_time_mins=project_dict['pouring_time_mins'],
@@ -345,10 +346,11 @@ def edit_project(project_dict):
             - amt                : *int*         : total amount of resin used
             - unit               : *str*         : unit of measurement for resin
             - colors             : *str or list* : color(s) separated by commas
-            - color_amts         : *str or list* : color(s) amounts separated by commas
-            - color_types        : *str or list* : color(s) types separated by commas
+            - color_amts         : *str or list* : color amount(s) separated by commas
+            - color_types        : *str or list* : color type(s) separated by commas
             - glitters           : *str or list* : glitter(s) separated by commas
-            - glitter_amts       : *str or list* : glitter(s) amounts separated by commas
+            - glitter_types        : *str or list* : glitter type(s) separated by commas
+            - glitter_amts       : *str or list* : glitter amount(s) separated by commas
             - time_to_pour_mins  : *int*         : time from combining to pouring in minutes
             - notes              : *str*         : additional notes
             - pouring_time_mins  : *int*         : total time took for all pouring in minutes
@@ -360,44 +362,7 @@ def edit_project(project_dict):
     :return:
         Edits only the given parameters in the database
     """
-
-    # Create new values to add to the details table based on given parameters
-    # edit_details = DB.engine.execute(
-    #     text("""
-    #         UPDATE "details"
-    #         SET resin_brand = :resin_brand, resin_type = :resin_type,
-    #             amount = :amt, unit = :unit, colors = :colors,
-    #             color_amts = :color_amts, color_types = :color_types,
-    #             glitters = :glitters, glitter_amts = :glitter_amts,
-    #             time_to_pour_mins = :time_to_pour_mins,
-    #             pouring_time_mins = :pouring_time_mins,
-    #             time_to_demold_hrs = :time_to_demold_hrs,
-    #             result_scale = :result_scale,
-    #             start_rm_temp_f = :start_rm_temp_f,
-    #             end_rm_temp_f = :end_rm_temp_f
-    #         WHERE project_id = :proj_id;
-    #         """), proj_id=project_dict['id'],
-    #     resin_brand=project_dict['resin_brand'],
-    #     resin_type=project_dict['resin_type'], amt=project_dict['amt'],
-    #     unit=project_dict['unit'], colors=project_dict['colors'],
-    #     color_amts=project_dict['color_amts'],
-    #     color_types=project_dict['color_types'],
-    #     glitters=project_dict['glitters'],
-    #     glitter_amts=project_dict['glitter_amts'],
-    #     time_to_pour_mins=project_dict['time_to_pour_mins'],
-    #     pouring_time_mins=project_dict['pouring_time_mins'],
-    #     time_to_demold_hrs=project_dict['time_to_demold_hrs'],
-    #     result_scale=project_dict['result_scale'],
-    #     start_rm_temp_f=project_dict['start_rm_temp_f'],
-    #     end_rm_temp_f=project_dict['end_rm_temp_f']
-    # )
-
     details = Details.query.filter_by(project_id = project_dict['id']).first()
-
-    # d_to_change = ['resin_brand', 'resin_type', 'amount', 'unit', 'colors', 'color_amts',
-    #                'color_types', 'glitters', 'glitter_amts', 'time_to_pour_mins',
-    #                'pouring_time_mins', 'time_to_demold_hrs', 'result_scale',
-    #                'start_rm_temp_f', 'end_rm_temp_f']
 
     details.resin_brand = project_dict['resin_brand']
     details.resin_type = project_dict['resin_type']
@@ -407,6 +372,7 @@ def edit_project(project_dict):
     details.color_amts = project_dict['color_amts']
     details.color_types = project_dict['color_types']
     details.glitters = project_dict['glitters']
+    details.glitter_types = project_dict['glitter_types']
     details.glitter_amts = project_dict['glitter_amts']
     details.time_to_pour_mins = project_dict['time_to_pour_mins']
     details.pouring_time_mins = project_dict['pouring_time_mins']
@@ -416,8 +382,6 @@ def edit_project(project_dict):
     details.end_rm_temp_f = project_dict['end_rm_temp_f']
 
     project = Project.query.filter_by(id = project_dict['id']).first()
-
-    # p_to_change = ['mold_img', 'result_img', 'notes']
 
     project.mold_img = project_dict['mold_img']
     project.result_img = project_dict['result_img']
