@@ -35,7 +35,7 @@ def add_user(first, last, user, hash_pass, email):
     :return:
         Adds new user to the database user table
     """
-    new_user = User(first_name=first, last_name=last, username=user,
+    new_user = User(first=first, last=last, username=user,
                     password=hash_pass, email=email)
     DB.session.add(new_user)
     DB.session.commit()
@@ -59,7 +59,8 @@ def get_user_id(username):
         WHERE username = :username;
         """), username=username).all()
     DB.session.close()
-    return user
+    user_id = user[0][0]
+    return user_id
 
 
 def user_details(user_id):
@@ -176,27 +177,66 @@ def add_new_project(project_dict: dict):
     :param
         - project_dict : *dict* : Dictionary with all of the following as its keys:
 
-            - user_id            : *int*         : currently logged in user id
-            - name               : *str*         : name of project
-            - mold_img           : *url*         : link to image of mold used
-            - res_img            : *url*         : link to image of results
-            - resin_brand        : *str*         : name of the brand of resin used
-            - resin_type         : *str*         : type of resin used
-            - amt                : *int*         : total amount of resin used
-            - unit               : *str*         : unit of measurement for resin
-            - colors             : *str or list* : color(s) separated by commas
-            - color_amts         : *str or list* : color amount(s) separated by commas
-            - color_types        : *str or list* : color type(s) separated by commas
-            - glitters           : *str or list* : glitter(s) separated by commas
-            - glitter_types      : *str or list* : glitter type(s) separated by commas
-            - glitter_amts       : *str or list* : glitter amount(s) separated by commas
-            - time_to_pour_mins  : *int*         : time from combining to pouring in minutes
-            - notes              : *str*         : additional notes
-            - pouring_time_mins  : *int*         : total time took for all pouring in minutes
-            - time_to_demold_hrs : *float*       : time from finished pouring to de-molding in hours
-            - result_scale       : *int*         : results scale 1-5 (1 being best result)
-            - start_rm_temp_f    : *float*       : room temp at start of project in fahrenheit
-            - end_rm_temp_f      : *float*       : room temp at end of project in fahrenheit
+            - user_id            : *int*         :
+                - currently logged in user id
+            - name               : *str*         :
+                - name of project
+            - mold_img           : *url*         :
+                - link to image of mold used
+            - resin_brand        : *str*         :
+                - name of the brand of resin used
+            - resin_type         : *str*         :
+                - type of resin used
+            - amt                : *int*         :
+                - total amount of resin used
+            - unit               : *str*         :
+                - unit of measurement for resin
+            - colors             : *str or list* :
+                - color(s) separated by commas
+            - color_amts         : *str or list* :
+                - color amount(s) separated by commas
+            - color_types        : *str or list* :
+                - color type(s) separated by commas
+            - glitters           : *str or list* :
+                - glitter(s) separated by commas
+            - glitter_amts       : *str or list* :
+                - glitter amount(s) separated by commas
+            - glitter_types      : *str or list* :
+                - glitter type(s) separated by commas
+            - time_to_pour_hrs   : *int*         :
+                - time from combining to pouring in hours
+            - time_to_pour_mins  : *int*         :
+                - time from combining to pouring in minutes
+            - pouring_time_hrs   : *int*         :
+                - total time took for all pouring in hours
+            - pouring_time_mins  : *int*         :
+                - total time took for all pouring in minutes
+            - time_to_demold_hrs : *float*       :
+                - time from finished pouring to de-molding in hours
+            - time_to_demold_mins: *float*       :
+                - time from finished pouring to de-molding in minutes
+            - start_temp         : *float*       :
+                - room temp at start of project
+            - start_temp_unit    : *float*       :
+                - unit of room temp at start of project
+            - end_temp           : *float*       :
+                - room temp at end of project
+            - end_temp_unit      : *float*       :
+                - unit of room temp at end of project
+            - demold_temp        : *float*       :
+                - room temp at de-molding of project
+            - demold_temp_unit   : *float*       :
+                - unit of room temp at de-molding of project
+            - result_scale       : *int*         :
+                - results scale 1-5 (1 being best result)
+            - res_img            : *url*         :
+                - link to image of results
+            - notes              : *str*         :
+                - additional notes
+            - mold_img_type      : *str*         :
+                - type of mold image uploaded, taken from data when uploaded
+            - res_img_type       : *str*         :
+                - type of result image uploaded, taken from data when uploaded
 
     :return:
         Adds all given parameters to the database
@@ -204,7 +244,9 @@ def add_new_project(project_dict: dict):
     # Create new values to add to the project table based on given parameters
     new_project = Project(name=project_dict['name'],
                           mold_img=project_dict['mold_img'],
+                          mold_img_type=project_dict['mold_img_type'],
                           result_img=project_dict['res_img'],
+                          res_img_type=project_dict['res_img_type'],
                           notes=project_dict['notes'],
                           user_id=project_dict['user_id']
                           )
@@ -228,12 +270,19 @@ def add_new_project(project_dict: dict):
                           glitters=project_dict['glitters'],
                           glitter_types=project_dict['glitter_types'],
                           glitter_amts=project_dict['glitter_amts'],
+                          time_to_pour_hrs=project_dict['time_to_pour_hrs'],
                           time_to_pour_mins=project_dict['time_to_pour_mins'],
+                          pouring_time_hrs=project_dict['pouring_time_hrs'],
                           pouring_time_mins=project_dict['pouring_time_mins'],
                           time_to_demold_hrs=project_dict['time_to_demold_hrs'],
+                          time_to_demold_mins=project_dict['time_to_demold_mins'],
                           result_scale=project_dict['result_scale'],
-                          start_rm_temp_f=project_dict['start_rm_temp_f'],
-                          end_rm_temp_f=project_dict['end_rm_temp_f'])
+                          start_temp=project_dict['start_temp'],
+                          start_temp_unit=project_dict['start_temp_unit'],
+                          end_temp=project_dict['end_temp'],
+                          end_temp_unit=project_dict['end_temp_unit'],
+                          demold_temp=project_dict['demold_temp'],
+                          demold_temp_unit=project_dict['demold_temp_unit'])
     # Add the new values to the details table
     DB.session.add(new_details)
     # Commit the changes to the database
@@ -337,27 +386,66 @@ def edit_project(project_dict):
     :param
         - project_dict : *dict* : Dictionary with all of the following as its keys:
 
-            - user_id            : *int*         : currently logged in user id
-            - name               : *str*         : name of project
-            - mold_img           : *url*         : link to image of mold used
-            - res_img            : *url*         : link to image of results
-            - resin_brand        : *str*         : name of the brand of resin used
-            - resin_type         : *str*         : type of resin used
-            - amt                : *int*         : total amount of resin used
-            - unit               : *str*         : unit of measurement for resin
-            - colors             : *str or list* : color(s) separated by commas
-            - color_amts         : *str or list* : color amount(s) separated by commas
-            - color_types        : *str or list* : color type(s) separated by commas
-            - glitters           : *str or list* : glitter(s) separated by commas
-            - glitter_types        : *str or list* : glitter type(s) separated by commas
-            - glitter_amts       : *str or list* : glitter amount(s) separated by commas
-            - time_to_pour_mins  : *int*         : time from combining to pouring in minutes
-            - notes              : *str*         : additional notes
-            - pouring_time_mins  : *int*         : total time took for all pouring in minutes
-            - time_to_demold_hrs : *float*       : time from finished pouring to de-molding in hours
-            - result_scale       : *int*         : results scale 1-5 (1 being best result)
-            - start_rm_temp_f    : *float*       : room temp at start of project in fahrenheit
-            - end_rm_temp_f      : *float*       : room temp at end of project in fahrenheit
+            - user_id            : *int*         :
+                - currently logged in user id
+            - name               : *str*         :
+                - name of project
+            - mold_img           : *url*         :
+                - link to image of mold used
+            - resin_brand        : *str*         :
+                - name of the brand of resin used
+            - resin_type         : *str*         :
+                - type of resin used
+            - amt                : *int*         :
+                - total amount of resin used
+            - unit               : *str*         :
+                - unit of measurement for resin
+            - colors             : *str or list* :
+                - color(s) separated by commas
+            - color_amts         : *str or list* :
+                - color amount(s) separated by commas
+            - color_types        : *str or list* :
+                - color type(s) separated by commas
+            - glitters           : *str or list* :
+                - glitter(s) separated by commas
+            - glitter_amts       : *str or list* :
+                - glitter amount(s) separated by commas
+            - glitter_types      : *str or list* :
+                - glitter type(s) separated by commas
+            - time_to_pour_hrs   : *int*         :
+                - time from combining to pouring in hours
+            - time_to_pour_mins  : *int*         :
+                - time from combining to pouring in minutes
+            - pouring_time_hrs   : *int*         :
+                - total time took for all pouring in hours
+            - pouring_time_mins  : *int*         :
+                - total time took for all pouring in minutes
+            - time_to_demold_hrs : *float*       :
+                - time from finished pouring to de-molding in hours
+            - time_to_demold_mins: *float*       :
+                - time from finished pouring to de-molding in minutes
+            - start_temp         : *float*       :
+                - room temp at start of project
+            - start_temp_unit    : *float*       :
+                - unit of room temp at start of project
+            - end_temp           : *float*       :
+                - room temp at end of project
+            - end_temp_unit      : *float*       :
+                - unit of room temp at end of project
+            - demold_temp        : *float*       :
+                - room temp at de-molding of project
+            - demold_temp_unit   : *float*       :
+                - unit of room temp at de-molding of project
+            - result_scale       : *int*         :
+                - results scale 1-5 (1 being best result)
+            - res_img            : *url*         :
+                - link to image of results
+            - notes              : *str*         :
+                - additional notes
+            - mold_img_type      : *str*         :
+                - type of mold image uploaded, taken from data when uploaded
+            - res_img_type       : *str*         :
+                - type of result image uploaded, taken from data when uploaded
 
     :return:
         Edits only the given parameters in the database
@@ -374,17 +462,26 @@ def edit_project(project_dict):
     details.glitters = project_dict['glitters']
     details.glitter_types = project_dict['glitter_types']
     details.glitter_amts = project_dict['glitter_amts']
+    details.time_to_pour_hrs = project_dict['time_to_pour_hrs']
     details.time_to_pour_mins = project_dict['time_to_pour_mins']
+    details.pouring_time_hrs = project_dict['pouring_time_hrs']
     details.pouring_time_mins = project_dict['pouring_time_mins']
     details.time_to_demold_hrs = project_dict['time_to_demold_hrs']
+    details.time_to_demold_mins = project_dict['time_to_demold_mins']
     details.result_scale = project_dict['result_scale']
-    details.start_rm_temp_f = project_dict['start_rm_temp_f']
-    details.end_rm_temp_f = project_dict['end_rm_temp_f']
+    details.start_temp = project_dict['start_temp']
+    details.start_temp_unit = project_dict['start_temp_unit']
+    details.end_temp = project_dict['end_temp']
+    details.end_temp_unit = project_dict['end_temp_unit']
+    details.demold_temp = project_dict['demold_temp']
+    details.demold_temp_unit = project_dict['demold_temp_unit']
 
     project = Project.query.filter_by(id = project_dict['id']).first()
 
     project.mold_img = project_dict['mold_img']
+    project.mold_img_type = project_dict['mold_img_type']
     project.result_img = project_dict['result_img']
+    project.result_img_type = project_dict['result_img_type']
     project.notes = project_dict['notes']
 
     DB.session.commit()
