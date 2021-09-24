@@ -13,7 +13,7 @@
         <p>The only field that is required to be filed in is the
             <strong>Project Name</strong>. All other fields are optional.</p><hr>
 
-        <form action="/add" method="post">
+        <form action="/add" method="post" enctype="multipart/form-data">
 
             <div class="form-group">
                 Project Name: * <input autofocus class="form-control" name="name"
@@ -22,9 +22,9 @@
             </div>
 
             <div class="form-group">
-                URL for Image of Mold: <input autofocus class="form-control" name="mold_img"
-                                              placeholder="Link to Mold Image" type="text"
-                                              style="width: 750px; text-align: center">
+                Upload an Image of the Mold: &nbsp;
+                <input class="form-control" name="mold_img"
+                       type="file" style="height: 46px; width: 692px">
             </div><hr>
 
             <h4>The Resin Used in this Project:</h4><br>
@@ -69,9 +69,8 @@
 
             <div class="form-group">
                 Amount of Color(s) (separate by commas):
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <input autofocus class="form-control" name="color_amt" placeholder="Amount of Color(s)"
-                       type="text" style="width: 252px; text-align: center">
+                       type="text" style="width: 612px; text-align: center">
             </div>
 
             <div class="form-group">
@@ -79,66 +78,118 @@
                                                               name="color_type"
                                                               placeholder="Type of Color(s)"
                                                               type="text"
-                                                              style="width: 638px; text-align: center">
+                                                              style="width: 638px;
+                                                              text-align: center">
             </div>
 
             <div class="form-group">
                 Glitter(s) (separated by commas): <input autofocus class="form-control"
-                                                         name="glitter" placeholder="Glitter(s)"
+                                                         name="glitter"
+                                                         placeholder="Glitter(s)"
                                                          type="text"
-                                                         style="width: 680px; text-align: center">
+                                                         style="width: 680px;
+                                                         text-align: center">
             </div>
 
             <div class="form-group">
                 Amount of Glitter(s) (separate by commas):
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <input autofocus class="form-control" name="glitter_amt"
                        placeholder="Amount of Glitter(s)" type="text"
-                       style="width: 252px; text-align: center">
+                       style="width: 612px; text-align: center">
+            </div>
+
+            <div class="form-group">
+                Type of Glitter(s) (separate by commas): <input autofocus class="form-control"
+                                                                name="color_type"
+                                                                placeholder="Type of Glitter(s)"
+                                                                type="text"
+                                                                style="width: 638px;
+                                                                text-align: center">
             </div><hr>
 
             <h4>Time involved in this Project:</h4><br>
 
             <div class="form-group">
-                Time from Combining 2 parts to Pour in Minutes:
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                <input autofocus class="form-control" name="time_to_pour"
-                       placeholder="Time until Pouring in Minutes" type="text"
-                       style="width: 235px; text-align: center">
+                Time from Combining 2 parts to Pouring:
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="time_to_pour_hrs"
+                       placeholder="Hour(s)" type="text"
+                       style="width: 100px; text-align: center"> hours
+                &nbsp; &nbsp; &nbsp; : &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="time_to_pour_mins"
+                       placeholder="Minute(s)" type="text"
+                       style="width: 100px; text-align: center"> minutes
             </div>
 
             <div class="form-group">
-                Time it took to Pour in Minutes:
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                <input autofocus class="form-control" name="pouring_time"
-                       placeholder="Pouring Time in Minutes" type="text"
-                       style="text-align: center">
+                Time it took to Pour all Resin:
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                <input autofocus class="form-control" name="pouring_time_hrs"
+                       placeholder="Hour(s)" type="text"
+                       style="width: 100px; text-align: center"> hours
+                &nbsp; &nbsp; &nbsp; : &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="pouring_time_mins"
+                       placeholder="Minute(s)" type="text"
+                       style="width: 100px; text-align: center"> minutes
             </div>
 
             <div class="form-group">
-                Time from Pouring to De-molding in Hours:
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                <input autofocus class="form-control" name="demolding_time"
-                       placeholder="Time to De-molding in Hours" type="text"
-                       style="width: 240px; text-align: center">
+                Time from Completing Pouring to De-molding:
+                &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="time_to_demold_hrs"
+                       placeholder="Hour(s)" type="text"
+                       style="width: 100px; text-align: center"> hours
+                &nbsp; &nbsp; &nbsp; : &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="time_to_demold_mins"
+                       placeholder="Minute(s)" type="text"
+                       style="width: 100px; text-align: center"> minutes
             </div><hr>
 
             <h4>Tracking Temperatures in the room during this Project:</h4><br>
 
             <div class="form-group">
-                Room Temperature in Fahrenheit at Start of Project:
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                <input autofocus class="form-control" name="start_rm_temp"
-                       placeholder="Starting Room Temp in Fahrenheit" type="text"
-                       style="width: 270px; text-align: center">
+                Room Temperature at the Start of Project:
+                &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="start_temp"
+                       placeholder="Starting Temp" type="text"
+                       style="width: 150px; text-align: center"> &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <label>Temp Measurement Metric:
+                    <select autofocus class="form-control" name="start_temp_unit">
+                        <option value="None" selected disabled>Select Metric</option>
+                        <option value="Fahrenheit">Fahrenheit</option>
+                        <option value="Celsius">Celsius</option>
+                    </select>
+                </label>
             </div>
 
             <div class="form-group">
-                Room Temperature in Fahrenheit at End of Project:
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                <input autofocus class="form-control" name="end_rm_temp"
-                       placeholder="Ending Room Temp in Fahrenheit" type="text"
-                       style="width: 260px; text-align: center">
+                Room Temperature when Pouring is Complete:
+                &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="end_temp"
+                       placeholder="Ending Temp" type="text"
+                       style="width: 150px; text-align: center"> &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <label>Temp Measurement Metric:
+                    <select autofocus class="form-control" name="end_temp_unit">
+                        <option value="None" selected disabled>Select Metric</option>
+                        <option value="Fahrenheit">Fahrenheit</option>
+                        <option value="Celsius">Celsius</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="form-group">
+                Room Temperature when De-molding:
+                &nbsp; &nbsp; &nbsp;
+                <input autofocus class="form-control" name="demold_temp"
+                       placeholder="De-mold Temp" type="text"
+                       style="width: 150px; text-align: center"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <label>Temp Measurement Metric:
+                    <select autofocus class="form-control" name="demold_temp_unit">
+                        <option value="None" selected disabled>Select Metric</option>
+                        <option value="Fahrenheit">Fahrenheit</option>
+                        <option value="Celsius">Celsius</option>
+                    </select>
+                </label>
             </div><hr>
 
             <h4>Results for this Project:</h4><br>
@@ -163,9 +214,11 @@
             </div>
 
             <div class="form-group">
-                Url for Image of Results: <input autofocus class="form-control" name="res_img"
-                                                 placeholder="Link to Results Image" type="text"
-                                                 style="width: 750px; text-align: center">
+                Upload an Image of the Results: &nbsp; <input class="form-control"
+                                                name="res_img"
+                                                type="file"
+                                                placeholder="Upload Result Image"
+                                                style="height: 46px; width: 692px">
             </div><hr>
 
             <h4>Any Additional Notes, Comments, and/or Feedback about this Project:</h4><br>
