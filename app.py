@@ -302,7 +302,7 @@ def add():
             'user_id': None, 'name': 'name', 'mold_img': '',
             'resin_brand': 'resin_brand', 'resin_type': 'resin_type',
             'amt': 'amount', 'unit': 'unit', 'colors': 'color',
-            'color_amts': 'color_amt', 'color_types': 'color_type',
+            'color_amts': 'color_amt', 'color_types': 'color_types',
             'glitters': 'glitter', 'glitter_amts': 'glitter_amt',
             'glitter_types': 'glitter_types',
             'time_to_pour_hrs': 'time_to_pour_hrs',
@@ -355,14 +355,14 @@ def add():
             mold_pic = request.files['mold_img']
             if mold_pic.filename:
                 proj_dict['mold_img'] = b64encode(mold_pic.read()).decode('utf-8')
-                proj_dict['mold_img_type'] = mold_pic.mimetype.split('/')
+                proj_dict['mold_img_type'] = mold_pic.mimetype.split('/')[1]
 
             # Check if the key is the result_img,
             #   because it needs to be added differently
             res_pic = request.files['res_img']
             if res_pic.filename:
                 proj_dict['res_img'] = b64encode(res_pic.read()).decode('utf-8')
-                proj_dict['res_img_type'] = res_pic.mimetype.split('/')
+                proj_dict['res_img_type'] = res_pic.mimetype.split('/')[1]
 
             # Set the user_id parameter in the dictionary
             print(f'Project Dict outside for loop: {proj_dict}')
@@ -528,28 +528,29 @@ def all_projects():
 
     # Get user's first name
     first = DB.engine.execute(text(
-        'SELECT first_name FROM "user" WHERE id = :user_id'
+        'SELECT first FROM "user" WHERE id = :user_id'
     ), user_id=session.get("user_id")).one()
 
     # Query a list of all projects on the user's account
     projects = get_all(session.get("user_id"))
 
     # Create a list of all column names to display
-    cols = ['Project Name', 'Link to Mold Image', 'Brand of Resin',
-            'Type of Resin', 'Amount of Resin', 'Measurement Unit', 'Color(s)',
+    cols = ['Project Name', 'Mold Image', 'Brand of Resin',
+            'Type of Resin', 'Amount of Resin', 'Color(s)',
             'Amount of Color(s)', 'Type of Color(s)', 'Glitter(s)',
-            'Type of Glitter(s)', 'Amount of Glitter(s)',
-            'Time Until Pour in Minutes', 'Pouring Time in Minutes',
-            'Hours until De-molding', 'Starting Room Temp in Fahrenheit',
-            'Ending Room Temp in Fahrenheit', 'Result Scale',
-            'Link to Result Image', 'Additional Notes'
-            ]
-    print(projects)
+            'Amount of Glitter(s)', 'Type of Glitter(s)',
+            'Time Until Pour (HH:MM)', 'Pouring Time (HH:MM)',
+            'Time until De-molding (HH:MM)', 'Starting Room Temp',
+            'Ending Room Temp', 'De-molding Room Temp', 'Result Scale',
+            'Result Image', 'Additional Notes']
+
+    mold_type = [row['mold_img_type'] for row in projects]
+    res_type = [row['result_img_type'] for row in projects]
 
     return render_template('all_projects.html', project=projects,
                            cols=cols, user=first[0],
-                           mold_type=projects['mold_img_type'],
-                           res_type=projects['result_img_type'])
+                           mold_type=mold_type,
+                           res_type=res_type)
 
 
 # Create route to select just one project
