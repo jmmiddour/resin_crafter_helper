@@ -6,9 +6,10 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from base64 import b64encode
+import psycopg2
 
 from db_model import DB, User, Project, Details
-from queries import dup_user, add_user, get_user_id, get_last_ten, \
+from queries import dup_user, add_user, get_user, get_last_ten, \
     add_new_project, dup_proj, get_all, del_rec, get_single, edit_project, \
     user_details, edit_user
 from helpers import apology, login_required
@@ -60,7 +61,7 @@ def index():
 
     # Get the user's first name from the database
     first = DB.engine.execute(text(
-        'SELECT first_name FROM "user" WHERE id = :user_id'
+        'SELECT first FROM "user" WHERE id = :user_id'
     ), user_id=session.get("user_id")).one()
 
     # Get the dataframe with the list of projects for the user
@@ -134,12 +135,12 @@ def register():
             add_user(first, last, name, hashed_pw, email_add)
 
             # Get the row where the username is in the data base
-            rows = get_user_id(name)
-            print(rows)
+            rows = get_user(name)
+            # rows = user_details(user_id)
 
             # Ensure username exists and password is correct
             if len(rows) != 1 or not check_password_hash(
-                    rows[0]["password"], request.form.get("password")
+                    rows[0]['password'], request.form.get("password")
             ):
                 return apology("invalid username and/or password", 403)
 
@@ -181,9 +182,7 @@ def login():
             return apology("must provide password", 403)
 
         # Query database for username
-        row = DB.engine.execute(
-            text('SELECT * FROM "user" WHERE username = :name'),
-            name=request.form.get("username")).all()
+        row = get_user(request.form.get("username"))
 
         # Ensure username exists and password is correct
         if len(row) != 1 or not check_password_hash(row[0]['password'], request.form.get("password")):
@@ -217,6 +216,74 @@ def logout():
     return redirect('/')
 
 
+# Create a route for editing account information
+@app.route('/edit_act', methods=["GET", "POST"])
+@login_required
+def edit_act():
+    """
+    Functionality for user to edit their account details
+    """
+    # Check to make sure the user is already logged in
+    if not session.get("user_id"):
+        # If not logged in, redirect the user to the login page
+        return redirect("/login")
+
+    # Create a dictionary to hold all parameters needed
+    user_dict = {
+        'id': None, 'first': None, 'last': None, 'username': None,
+        'password': None, 'email': None
+    }
+
+    # Grab the user information from the database
+    user = user_details(session.get("user_id"))
+
+    # Iterate through the dictionary to add the values from the database for
+    #   the project specified
+    i = 0  # Create a counter to increment
+    for k, _ in user_dict.items():
+        # Change the value in the dictionary to the value at the current location
+        user_dict[k] = user[i]
+        i += 1  # Increment the index location value by 1
+
+    if request.method == "POST":
+        # Iterate through the dictionary of project parameters
+        for key, val in user_dict.items():
+            if key != 'id' and key != 'username':
+                if key == 'password':
+                    # Get user's new password
+                    password = request.form.get('password')
+                    # Confirm matching new password
+                    conf_pass = request.form.get('confirmation')
+
+                    # If the user's passwords do not match
+                    if password != conf_pass:
+                        return apology("Your passwords do not match. Please try again!")
+
+                    # Hash the user's password to store in the database
+                    hashed_pw = generate_password_hash(password)
+
+                    # Add new hashed password to user dictionary
+                    user_dict['password'] = hashed_pw
+
+                # Get the values from the form if they are different
+                elif request.form.get(key) != user_dict[key]:
+                    user_dict[key] = request.form.get(key)
+
+                # Otherwise, continue iterating and change nothing
+                user_dict[key] = user_dict[key]
+
+        # Add the new project to the database using function from queries.py
+        edit_user(user_dict)
+
+        # Display a message on the home page to let the user know their
+        #   project was successfully added to the database
+        flash(f'Your account has been edited successfully!')
+        # Redirect user to the home page
+        return redirect('/')
+
+    return render_template('edit_act.html', user=user_dict)
+
+
 # Create route for adding a project
 @app.route('/add', methods=["GET", "POST"])
 @login_required
@@ -232,17 +299,23 @@ def add():
     if request.method == "POST":
         # Create a dictionary to hold all parameters needed
         proj_dict = {
-            'user_id': None, 'name': 'name',
-            'mold_img': 'mold_img', 'res_img': 'res_img',
+            'user_id': None, 'name': 'name', 'mold_img': '',
             'resin_brand': 'resin_brand', 'resin_type': 'resin_type',
             'amt': 'amount', 'unit': 'unit', 'colors': 'color',
             'color_amts': 'color_amt', 'color_types': 'color_type',
-            'glitters': 'glitter', 'glitter_types': 'glitter_types',
-            'glitter_amts': 'glitter_amt', 'time_to_pour_mins': 'time_to_pour',
-            'notes': 'notes', 'pouring_time_mins': 'pouring_time',
-            'time_to_demold_hrs': 'demolding_time',
-            'result_scale': 'res_scale', 'start_rm_temp_f': 'start_rm_temp',
-            'end_rm_temp_f': 'end_rm_temp'
+            'glitters': 'glitter', 'glitter_amts': 'glitter_amt',
+            'glitter_types': 'glitter_types',
+            'time_to_pour_hrs': 'time_to_pour_hrs',
+            'time_to_pour_mins': 'time_to_pour_mins',
+            'pouring_time_hrs': 'pouring_time_hrs',
+            'pouring_time_mins': 'pouring_time_mins',
+            'time_to_demold_hrs': 'demolding_time_hrs',
+            'time_to_demold_mins': 'demolding_time_mins',
+            'start_temp': 'start_temp', 'start_temp_unit': 'start_temp_unit',
+            'end_temp': 'end_temp', 'end_temp_unit': 'end_temp_unit',
+            'demold_temp': 'demold_temp', 'demold_temp_unit': 'demold_temp_unit',
+            'result_scale': 'res_scale', 'res_img': '', 'notes': 'notes',
+            'mold_img_type': '', 'res_img_type': ''
         }
 
         # Get the users id number
@@ -257,25 +330,42 @@ def add():
         else:
             # Iterate through the dictionary of project parameters
             for key, val in proj_dict.items():
-                # Check if the key is the mold_img,
-                #   because it needs to be added differently
-                if key == 'mold_img' and request.form.get(
-                        'mold_img') is not None:
-                    mold_pic = request.files['mold_img']
-                    proj_dict[key] = b64encode(mold_pic.read()).decode('utf-8')
+                if (key == 'amt') or (key == 'time_to_pour_hrs'
+                ) or (key == 'time_to_pour_mins') or (key == 'pouring_time_hrs'
+                ) or (key == 'pouring_time_mins') or (key == 'time_to_demold_hrs'
+                ) or (key == 'time_to_demold_mins') or (key == 'start_temp'
+                ) or (key == 'end_temp') or (key == 'demold_temp'):
+                    if request.form.get(val):
+                        proj_dict[key] = int(request.form.get(val))
 
-                # Check if the key is the result_img,
-                #   because it needs to be added differently
-                elif key == 'result_img' and request.form.get(
-                        'result_img') is not None:
-                    res_pic = request.files['result_img']
-                    proj_dict[key] = b64encode(res_pic.read()).decode('utf-8')
+                    else:
+                        proj_dict[key] = 0
 
                 # Get the values from the form if they are not empty
-                elif request.form.get(val) is not None:
+                elif request.form.get(val) and (
+                        key != 'mold_img' or key != 'mold_img_type' or
+                        key != 'res_img' or key != 'res_img_type'):
                     proj_dict[key] = request.form.get(val)
 
+                else:
+                    proj_dict[key] = None
+
+            # Check if the key is the mold_img,
+            #   because it needs to be added differently
+            mold_pic = request.files['mold_img']
+            if mold_pic.filename:
+                proj_dict['mold_img'] = b64encode(mold_pic.read()).decode('utf-8')
+                proj_dict['mold_img_type'] = mold_pic.mimetype.split('/')
+
+            # Check if the key is the result_img,
+            #   because it needs to be added differently
+            res_pic = request.files['res_img']
+            if res_pic.filename:
+                proj_dict['res_img'] = b64encode(res_pic.read()).decode('utf-8')
+                proj_dict['res_img_type'] = res_pic.mimetype.split('/')
+
             # Set the user_id parameter in the dictionary
+            print(f'Project Dict outside for loop: {proj_dict}')
             proj_dict['user_id'] = user_id
             # Add the new project to the database using function from queries.py
             add_new_project(proj_dict)
@@ -454,9 +544,12 @@ def all_projects():
             'Ending Room Temp in Fahrenheit', 'Result Scale',
             'Link to Result Image', 'Additional Notes'
             ]
+    print(projects)
 
     return render_template('all_projects.html', project=projects,
-                           cols=cols, user=first[0])
+                           cols=cols, user=first[0],
+                           mold_type=projects['mold_img_type'],
+                           res_type=projects['result_img_type'])
 
 
 # Create route to select just one project
@@ -523,82 +616,6 @@ def display(project):
         i += 1  # Increment the index location value by 1
 
     return render_template('display.html', project=proj_dict)
-
-
-# Create a route for editing account information
-@app.route('/edit_act', methods=["GET", "POST"])
-@login_required
-def edit_act():
-    """
-    Functionality for user to edit their account details
-    """
-    # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
-
-    # Create a dictionary to hold all parameters needed
-    user_dict = {
-        'id': None,
-        'first_name': None,
-        'last_name': None,
-        'username': None,
-        'password': None,
-        'email': None
-    }
-
-    # Grab the user information from the database
-    user = user_details(session.get("user_id"))
-
-    # Iterate through the dictionary to add the values from the database for
-    #   the project specified
-    i = 0  # Create a counter to increment
-    for k, _ in user_dict.items():
-        # Change the value in the dictionary to the value at the current location
-        user_dict[k] = user[i]
-        i += 1  # Increment the index location value by 1
-
-    print(user_dict)
-
-    if request.method == "POST":
-        # Iterate through the dictionary of project parameters
-        for key, val in user_dict.items():
-            if key != 'id' and key != 'username':
-                if key == 'password':
-                    # Get user's new password
-                    password = request.form.get('password')
-                    # Confirm matching new password
-                    conf_pass = request.form.get('confirmation')
-
-                    # If the user's passwords do not match
-                    if password != conf_pass:
-                        return apology("Your passwords do not match. Please try again!")
-
-                    # Hash the user's password to store in the database
-                    hashed_pw = generate_password_hash(password)
-
-                    # Add new hashed password to user dictionary
-                    user_dict['password'] = hashed_pw
-
-                # Get the values from the form if they are different
-                elif request.form.get(key) != user_dict[key]:
-                    user_dict[key] = request.form.get(key)
-
-                # Otherwise, continue iterating and change nothing
-                user_dict[key] = user_dict[key]
-
-        print(f'user dict in post: {user_dict}')
-
-        # Add the new project to the database using function from queries.py
-        edit_user(user_dict)
-
-        # Display a message on the home page to let the user know their
-        #   project was successfully added to the database
-        flash(f'Your account has been edited successfully!')
-        # Redirect user to the home page
-        return redirect('/')
-
-    return render_template('edit_act.html', user=user_dict)
 
 
 # Create a route to create the database
