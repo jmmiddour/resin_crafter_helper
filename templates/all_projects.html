@@ -27,28 +27,106 @@
 
             <tbody>
             {% for row in project %}
+{#                {% for val in project[row] %}#}
+{#                    <tr>#}
+{#                        {% if row.mold_img %}#}
+{#                            <td>#}
+{#                                <img src="data:{{ row.mold_img_type }};base64,{{ val }}"#}
+{#                                     height=50 width=70>#}
+{#                            </td>#}
+{##}
+{#                        {% elif row.mold_img == '' %}#}
+{#                            <td>#}
+{#                                None#}
+{#                            </td>#}
+{##}
+{#                        {% elif row.result_img %}#}
+{#                            <td>#}
+{#                                <img src="data:{{ row.result_img_type }};base64,{{ val }}"#}
+{#                                     height=50 width=70>#}
+{#                            </td>#}
+{##}
+{#                        {% elif row.result_img == '' %}#}
+{#                            <td>#}
+{#                                None#}
+{#                            </td>#}
+{##}
+{#                        {% else %}#}
+{#                            <td>#}
+{#                                {{ row.val }}#}
+{#                            </td>#}
+{##}
+{#                        {% endif %}#}
+{##}
+{#                    </tr>#}
+{##}
+{#                {% endfor %}#}
                 <tr>
                     <td>{{ row.name }}</td>
-                    <td>{{ row.mold_img }}</td>
+                    <td>
+                        <img src="data:{{ row.mold_img_type }};base64,{{ row.mold_img }}"
+                             height=50 width=70>
+                    </td>
                     <td>{{ row.resin_brand }}</td>
                     <td>{{ row.resin_type }}</td>
-                    <td>{{ row.amount }}</td>
-                    <td>{{ row.unit }}</td>
+                    {% if row.unit == 'Grams' %}
+                        <td>{{ row.amount }} g</td>
+                    {% elif row.unit == 'Milliliters' %}
+                        <td>{{ row.amount }} mL</td>
+                    {% elif row.unit == 'Ounces' %}
+                        <td>{{ row.amount }} oz</td>
+                    {% elif row.unit == 'Quarts' %}
+                        <td>{{ row.amount }} qt</td>
+                    {% elif row.unit == 'Pints' %}
+                        <td>{{ row.amount }} pt</td>
+                    {% elif row.unit == 'Teaspoons' %}
+                        <td>{{ row.amount }} tsps</td>
+                    {% elif row.unit == 'Tablespoons' %}
+                        <td>{{ row.amount }} tbsps</td>
+                    {% elif row.unit == 'Gallons' %}
+                        <td>{{ row.amount }} gals</td>
+                    {% elif row.unit == 'Other' %}
+                        <td>{{ row.amount }} ?</td>
+                    {% elif row.unit == '' %}
+                        <td>{{ row.amount }}</td>
+                    {% endif %}
                     <td>{{ row.colors }}</td>
                     <td>{{ row.color_amts }}</td>
                     <td>{{ row.color_types }}</td>
                     <td>{{ row.glitters }}</td>
                     <td>{{ row.glitter_amts }}</td>
-                    <td>{{ row.time_to_pour_mins }}</td>
-                    <td>{{ row.pouring_time_mins }}</td>
-                    <td>{{ row.time_to_demold_hrs }}</td>
-                    <td>{{ row.start_rm_temp_f }}</td>
-                    <td>{{ row.end_rm_temp_f }}</td>
+                    <td>{{ row.glitter_types }}</td>
+                    <td>{{ '%02d' % row.time_to_pour_hrs
+                            }}:{{ '%02d' % row.time_to_pour_mins }}</td>
+                    <td>{{ '%02d' % row.pouring_time_hrs
+                            }}:{{ '%02d' % row.pouring_time_mins }}</td>
+                    <td>{{ '%02d' % row.time_to_demold_hrs
+                            }}:{{ '%02d' % row.time_to_demold_mins }}</td>
+                    {% if row.start_temp_unit == 'Fahrenheit' %}
+                        <td>{{ row.start_temp }}&#8457;</td>
+                    {% elif row.start_temp_unit == 'Celsius' %}
+                        <td>{{ row.start_temp }}&#8451;</td>
+                    {% endif %}
+                    {% if row.end_temp_unit == 'Fahrenheit' %}
+                        <td>{{ row.end_temp }}&#8457;</td>
+                    {% elif row.end_temp_unit == 'Celsius' %}
+                        <td>{{ row.end_temp }}&#8451;</td>
+                    {% endif %}
+                    {% if row.demold_temp_unit == 'Fahrenheit' %}
+                        <td>{{ row.demold_temp }}&#8457;</td>
+                    {% elif row.demold_temp_unit == 'Celsius' %}
+                        <td>{{ row.demold_temp }}&#8451;</td>
+                    {% endif %}
                     <td>{{ row.result_scale }}</td>
-                    <td>{{ row.result_img }}</td>
+                    <td>
+                        <img src="data:{{ row.result_img_type }};base64,{{ row.result_img }}"
+                             height=50 width=70>
+                    </td>
                     <td>{{ row.notes }}</td>
                 </tr>
+
             {% endfor %}
+
             </tbody>
 
         </table>
