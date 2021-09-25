@@ -42,7 +42,7 @@ def add_user(first, last, user, hash_pass, email):
     DB.session.close()
 
 
-def get_user_id(username):
+def get_user(username):
     """
         Get the row where the username is in the database
 
@@ -59,8 +59,8 @@ def get_user_id(username):
         WHERE username = :username;
         """), username=username).all()
     DB.session.close()
-    user_id = user[0][0]
-    return user_id
+    # user_id = user[0][0]
+    return user
 
 
 def user_details(user_id):
@@ -99,8 +99,8 @@ def edit_user(user_dict):
         - user_dict : *dict* : Dictionary with all of the following as its keys:
 
             - id         : *int* : currently logged in user id
-            - first_name : *str* : first name of the user
-            - last_name  : *str* : last name of the user
+            - first      : *str* : first name of the user
+            - last       : *str* : last name of the user
             - username   : *str* : username of the user - can not be changed
             - password   : *str* : hashed user's password
             - email      : *str* : user's email address
@@ -110,8 +110,8 @@ def edit_user(user_dict):
     """
     user = User.query.filter_by(id = user_dict['id']).first()
 
-    user.first_name = user_dict['first_name']
-    user.last_name = user_dict['last_name']
+    user.first = user_dict['first']
+    user.last = user_dict['last']
     user.password = user_dict['password']
     user.email = user_dict['email']
 
@@ -246,7 +246,7 @@ def add_new_project(project_dict: dict):
                           mold_img=project_dict['mold_img'],
                           mold_img_type=project_dict['mold_img_type'],
                           result_img=project_dict['res_img'],
-                          res_img_type=project_dict['res_img_type'],
+                          result_img_type=project_dict['res_img_type'],
                           notes=project_dict['notes'],
                           user_id=project_dict['user_id']
                           )
