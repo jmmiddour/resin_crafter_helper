@@ -374,6 +374,7 @@ def get_single(proj_id):
 
     # Turn the tuple into a list
     single_list = [i for i in single[0]]
+    # single_list = single[0]
 
     return single_list
 
