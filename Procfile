@@ -1,0 +1,1 @@
+web: gunicorn resin_crafter_helper:app -t 120
