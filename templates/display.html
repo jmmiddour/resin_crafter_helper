@@ -76,9 +76,8 @@
                          width="90%" height="90%">
 
                 {% else %}
-                    <img src="{{ project.mold_img }}"
-                         alt="{{ project.name }} mold image"
-                         height="90%" width="90%">
+                    <img src="data:{{ project.mold_img_type }};base64,{{ project.mold_img }}"
+                             height=90% width=90%>
 
                 {% endif %}
 
@@ -104,7 +103,7 @@
 
                 <h5>Color(s):</h5><br>
 
-                {% if project.colors != '' %}
+                {% if project.colors != None %}
                     {% for color in project.colors.split(',') %}
                         <ul>
                             <li>{{ color }}</li>
@@ -120,7 +119,7 @@
 
                 <h5>Color Type(s):</h5><br>
 
-                {% if project.color_types != '' %}
+                {% if project.color_types != None %}
                     {% for color_type in project.color_types.split(',') %}
                         <ul>
                             <li>{{ color_type }}</li>
@@ -136,7 +135,7 @@
 
                 <h5>Color Amount(s):</h5><br>
 
-                {% if project.color_amts != '' %}
+                {% if project.color_amts != None %}
 
                     {% for camts in project.color_amts.split(',') %}
                         <ul>
@@ -159,7 +158,7 @@
 
                 <h5>Glitter(s):</h5><br>
 
-                {% if project.glitters != '' %}
+                {% if project.glitters != None %}
                     {% for glitter in project.glitters.split(',') %}
                         <ul>
                             <li>{{ glitter }}</li>
@@ -175,7 +174,7 @@
 
                 <h5>Glitter Type(s):</h5><br>
 
-                {% if project.color_types != '' %}
+                {% if project.color_types != None %}
                     {% for glitter_type in project.glitter_types.split(',') %}
                         <ul>
                             <li>{{ glitter_type }}</li>
@@ -190,7 +189,7 @@
                 {% endif %}<br>
 
                 <h5>Amount of Glitter(s):</h5><br>
-                {% if project.glitter_amts != '' %}
+                {% if project.glitter_amts != None %}
                     {% for gamt in project.glitter_amts.split(',') %}
                         <ul>
                             <li>{{ gamt }}</li>
@@ -222,10 +221,14 @@
                 </span>
             </h2><br>
 
-            <h5><span>Time from Combining to Pouring: &nbsp; </span>
-                {% if project.time_to_pour_mins != '' %}
+            <h5>
+                <span>
+                    Time from Combining to Pouring: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                </span>
+                {% if project.time_to_pour_mins != '' or project.time_to_pour_hrs %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ project.time_to_pour_mins }} minutes<br>
+                        {{ '%02d' % project.time_to_pour_hrs }} hours &nbsp; and &nbsp;
+                        {{ '%02d' % project.time_to_pour_mins }} minutes<br>
                     </span>
 
                 {% else %}
@@ -236,10 +239,14 @@
                 {% endif %}
             </h5>
 
-            <h5><span>Time it took to Pour Entire Project: &nbsp; </span>
-                {% if project.pouring_time_mins != '' %}
+            <h5>
+                <span>
+                    Time it took to Pour Entire Project: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                </span>
+                {% if project.pouring_time_mins != '' or project.pouring_time_hrs %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ project.pouring_time_mins }} minutes<br>
+                        {{ '%02d' % project.pouring_time_hrs }} hours &nbsp; and &nbsp;
+                        {{ '%02d' % project.pouring_time_mins }} minutes<br>
                     </span>
 
                 {% else %}
@@ -250,10 +257,14 @@
                 {% endif %}
             </h5>
 
-            <h5><span>Time from Completing Pouring to De-molding: &nbsp; </span>
+            <h5>
+                <span>
+                    Time from Completing Pouring to De-molding: &nbsp;&nbsp;
+                </span>
                 {% if project.time_to_demold_hrs != '' %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ project.time_to_demold_hrs }} hours<br>
+                        {{ '%02d' % project.time_to_demold_hrs }} hours &nbsp; and &nbsp;
+                        {{ '%02d' % project.time_to_demold_mins }} minutes<br><br>
                     </span>
 
                 {% else %}
@@ -274,7 +285,7 @@
                     &#127777;&#65039; &#127777;&#65039; &#127777;&#65039;
                 </span>
                 <span>
-                    &nbsp; &nbsp; &nbsp; Temperature Details: &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; Temperature Details &nbsp; &nbsp; &nbsp;
                 </span>
                 <span style="font-size: large">
                     &#127777;&#65039; &#127777;&#65039; &#127777;&#65039;
@@ -283,10 +294,19 @@
                 </span>
             </h2><br>
 
-            <h5><span>Room Temperature at the Start of Project: &nbsp; </span>
-                {% if project.start_rm_temp_f != '' %}
+            <h5>
+                <span>
+                    Room Temperature at the Start of Project:
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                </span>
+                {% if project.start_temp_unit == 'Fahrenheit' and project.start_temp %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ project.start_rm_temp_f }}&#8457;<br>
+                        {{ project.start_temp }}&#8457;<br>
+                    </span>
+
+                {% elif project.start_temp_unit == 'Celsius' and project.start_temp %}
+                    <span style="font-weight: normal; font-size: large">
+                        {{ project.start_temp }}&#8451;<br>
                     </span>
 
                 {% else %}
@@ -295,23 +315,58 @@
                     </span>
 
                 {% endif %}
+
             </h5>
 
-            <h5><span>Room Temperature at time of De-molding: &nbsp; </span>
-                {% if project.end_rm_temp_f != '' %}
+            <h5>
+                <span>
+                    Room Temperature when Done Pouring:
+                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                </span>
+                {% if project.end_temp_unit == 'Fahrenheit' and project.end_temp %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ project.end_rm_temp_f }}&#8457;<br><br>
+                        {{ project.end_temp }}&#8457;<br>
+                    </span>
+
+                {% elif project.end_temp_unit == 'Celsius' and project.end_temp %}
+                    <span style="font-weight: normal; font-size: large">
+                        {{ project.end_temp }}&#8451;<br>
                     </span>
 
                 {% else %}
                     <span style="font-weight: normal; font-size: large">
-                        None Recorded<br><br>
+                        None Recorded<br>
                     </span>
 
                 {% endif %}
+
             </h5>
 
-        </div>
+            <h5>
+                <span>
+                    Room Temperature at time of De-molding:
+                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                </span>
+                {% if project.demold_temp_unit == 'Fahrenheit' and project.demold_temp %}
+                    <span style="font-weight: normal; font-size: large">
+                        {{ project.demold_temp }}&#8457;<br>
+                    </span>
+
+                {% elif project.demold_temp_unit == 'Celsius' and project.demold_temp %}
+                    <span style="font-weight: normal; font-size: large">
+                        {{ project.demold_temp }}&#8451;<br>
+                    </span>
+
+                {% else %}
+                    <span style="font-weight: normal; font-size: large">
+                        None Recorded<br>
+                    </span>
+
+                {% endif %}
+
+            </h5>
+
+        </div><br>
 
         <h2 style="color: cornflowerblue">
             <span style="font-size: large">
@@ -354,13 +409,34 @@
                          width="90%" height="90%">
 
                 {% else %}
-                    <img src="{{ project.result_img }}"
-                         alt="{{ project.name }} results image"
-                         height="90%" width="90%">
+                    <img src="data:{{ project.result_img_type }};base64,{{ project.result_img }}"
+                         height=90% width=90%>
 
                 {% endif %}
 
             </div>
+
+        </div><br>
+
+        <div style="color: #ea433b; font-size: large">
+
+            <h3>
+                <span style="font-size: large">
+                    &#x1F4DD; &#x1F4DD; &#x1F4DD; &nbsp; &nbsp; &nbsp;
+                </span>
+                <span>Additional Notes, Comments, Suggestions, etc.</span>
+                <span style="font-size: large">
+                    &nbsp; &nbsp; &nbsp; &#x1F4DD; &#x1F4DD; &#x1F4DD;
+                </span>
+            </h3><br>
+
+            {% if project.notes %}
+                {{ project.notes }}
+
+            {% else %}
+                None Recorded
+
+            {% endif %}
 
         </div>
 
