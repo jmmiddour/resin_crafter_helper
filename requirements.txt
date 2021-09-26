@@ -1,0 +1,7 @@
+flask-session = "*"
+flask = "*"
+flask-sqlalchemy = "*"
+python-dotenv = "*"
+requests = "*"
+werkzeug = "*"
+psycopg2 = "*"
