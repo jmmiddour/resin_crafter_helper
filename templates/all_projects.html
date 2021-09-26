@@ -64,8 +64,12 @@
                 <tr>
                     <td>{{ row.name }}</td>
                     <td>
-                        <img src="data:{{ row.mold_img_type }};base64,{{ row.mold_img }}"
-                             height=50 width=70>
+                        {% if row.mold_img %}
+                            <img src="data:{{ row.mold_img_type }};base64,{{ row.mold_img }}"
+                                 height=50 width=70>
+                        {% else %}
+                            None
+                        {% endif %}
                     </td>
                     <td>{{ row.resin_brand }}</td>
                     <td>{{ row.resin_type }}</td>
@@ -87,7 +91,7 @@
                         <td>{{ row.amount }} gals</td>
                     {% elif row.unit == 'Other' %}
                         <td>{{ row.amount }} ?</td>
-                    {% elif row.unit == '' %}
+                    {% else %}
                         <td>{{ row.amount }}</td>
                     {% endif %}
                     <td>{{ row.colors }}</td>
@@ -102,25 +106,37 @@
                             }}:{{ '%02d' % row.pouring_time_mins }}</td>
                     <td>{{ '%02d' % row.time_to_demold_hrs
                             }}:{{ '%02d' % row.time_to_demold_mins }}</td>
-                    {% if row.start_temp_unit == 'Fahrenheit' %}
+                    {% if row.start_temp and row.start_temp_unit == 'Fahrenheit' %}
                         <td>{{ row.start_temp }}&#8457;</td>
-                    {% elif row.start_temp_unit == 'Celsius' %}
+                    {% elif row.start_temp and row.start_temp_unit == 'Celsius' %}
                         <td>{{ row.start_temp }}&#8451;</td>
+                    {% else %}
+                        <td>
+                            {{ row.start_temp }}
+                        </td>
                     {% endif %}
-                    {% if row.end_temp_unit == 'Fahrenheit' %}
+                    {% if row.end_temp and row.end_temp_unit == 'Fahrenheit' %}
                         <td>{{ row.end_temp }}&#8457;</td>
-                    {% elif row.end_temp_unit == 'Celsius' %}
+                    {% elif row.end_temp and row.end_temp_unit == 'Celsius' %}
                         <td>{{ row.end_temp }}&#8451;</td>
+                    {% else %}
+                        <td>{{ row.end_temp }}</td>
                     {% endif %}
-                    {% if row.demold_temp_unit == 'Fahrenheit' %}
+                    {% if row.demold_temp and row.demold_temp_unit == 'Fahrenheit' %}
                         <td>{{ row.demold_temp }}&#8457;</td>
-                    {% elif row.demold_temp_unit == 'Celsius' %}
+                    {% elif row.demold_temp and row.demold_temp_unit == 'Celsius' %}
                         <td>{{ row.demold_temp }}&#8451;</td>
+                    {% else %}
+                        <td>{{ row.demold_temp }}</td>
                     {% endif %}
                     <td>{{ row.result_scale }}</td>
                     <td>
-                        <img src="data:{{ row.result_img_type }};base64,{{ row.result_img }}"
-                             height=50 width=70>
+                        {% if row.result_img %}
+                            <img src="data:{{ row.result_img_type }};base64,{{ row.result_img }}"
+                                 height=50 width=70>
+                        {% else %}
+                            None
+                        {% endif %}
                     </td>
                     <td>{{ row.notes }}</td>
                 </tr>
