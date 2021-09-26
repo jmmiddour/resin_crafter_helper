@@ -611,7 +611,6 @@ def display(project):
 
     # Get the details for the project name given
     project_details = get_single(project_id[0])
-    print(project_details)
 
     # Iterate through the dictionary to add the values from the database for
     #   the project specified
