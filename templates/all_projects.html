@@ -100,12 +100,30 @@
                     <td>{{ row.glitters }}</td>
                     <td>{{ row.glitter_amts }}</td>
                     <td>{{ row.glitter_types }}</td>
-                    <td>{{ '%02d' % row.time_to_pour_hrs
-                            }}:{{ '%02d' % row.time_to_pour_mins }}</td>
-                    <td>{{ '%02d' % row.pouring_time_hrs
-                            }}:{{ '%02d' % row.pouring_time_mins }}</td>
-                    <td>{{ '%02d' % row.time_to_demold_hrs
-                            }}:{{ '%02d' % row.time_to_demold_mins }}</td>
+                    <td>
+                        {% if row.time_to_pour_hrs or row.time_to_pour_mins %}
+                            {{ '%02d' % row.time_to_pour_hrs
+                                    }}:{{ '%02d' % row.time_to_pour_mins }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.time_to_pour_hrs or row.time_to_pour_mins %}
+                            {{ '%02d' % row.pouring_time_hrs
+                                    }}:{{ '%02d' % row.pouring_time_mins }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.time_to_demold_hrs or row.time_to_demold_mins %}
+                            {{ '%02d' % row.time_to_demold_hrs
+                                    }}:{{ '%02d' % row.time_to_demold_mins }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
                     {% if row.start_temp and row.start_temp_unit == 'Fahrenheit' %}
                         <td>{{ row.start_temp }}&#8457;</td>
                     {% elif row.start_temp and row.start_temp_unit == 'Celsius' %}
