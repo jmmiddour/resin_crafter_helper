@@ -50,14 +50,22 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
+# Create a function to check that user is logged in
+def check_valid_login():
+    # Check to make sure the user is already logged in
+    if not session.get("user_id"):
+        # If not logged in, redirect the user to the login page
+        return redirect("/login")
+
+    return session.get('user_id')
+
+
 # Create the index route
 @app.route('/')
 @login_required
 def index():
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If the user is not logged in, redirect them to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Get the user's first name from the database
     first = DB.engine.execute(text(
@@ -224,9 +232,7 @@ def edit_act():
     Functionality for user to edit their account details
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Create a dictionary to hold all parameters needed
     user_dict = {
@@ -292,9 +298,7 @@ def add():
     Functionality for the user to add a new project to their account
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     if request.method == "POST":
         # Create a dictionary to hold all parameters needed
@@ -388,9 +392,7 @@ def remove():
     Functionality for the user to remove a project from their account
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Query a list of all projects on the user's account
     projects = get_all(session.get("user_id"))
@@ -416,9 +418,7 @@ def pick_edit():
         already in their account.
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Create a list of project names for dropdown selection
     projects = get_all(session.get("user_id"))
@@ -440,9 +440,7 @@ def edit(project):
     Functionality for user to edit a project already in their account
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Create a dictionary to hold all parameters needed
     proj_dict = {
@@ -526,9 +524,7 @@ def all_projects():
     Functionality to view all the projects currently in the user's account
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Get user's first name
     first = DB.engine.execute(text(
@@ -565,9 +561,7 @@ def select():
     Functionality to display just one project in the users account
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Create a list of project names for dropdown selection
     projects = get_all(session.get("user_id"))
@@ -589,9 +583,7 @@ def display(project):
     Functionality to display just one project in the users account
     """
     # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
+    check_valid_login()
 
     # Create a dictionary to hold all parameters needed
     proj_dict = {
@@ -640,6 +632,8 @@ def create_db():
         DB.session.commit()  # Commit the changes
         DB.session.close()  # Close the database connection
 
+    # Display a message on the home page
+    flash(f'The database has been created successfully!')
     # Redirect to home page
     return redirect('/')
 
