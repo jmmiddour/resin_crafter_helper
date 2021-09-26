@@ -591,14 +591,18 @@ def display(project):
 
     # Create a dictionary to hold all parameters needed
     proj_dict = {
-        'id': None, 'name': None, 'mold_img': None, 'result_img': None,
-        'notes': None, 'user_id': None, 'project_id': None,
-        'resin_brand': None, 'resin_type': None, 'amount': None, 'unit': None,
+        'id': None, 'name': None, 'mold_img': None, 'mold_img_type': None,
+        'result_img': None, 'result_img_type': None, 'notes': None,
+        'user_id': None, 'project_id': None, 'resin_brand': None,
+        'resin_type': None, 'amount': None, 'unit': None,
         'colors': None, 'color_amts': None, 'color_types': None,
-        'glitters': None, 'glitter_types': None, 'glitter_amts': None,
-        'time_to_pour_mins': None, 'pouring_time_mins': None,
-        'time_to_demold_hrs': None, 'result_scale': None,
-        'start_rm_temp_f': None, 'end_rm_temp_f': None
+        'glitters': None, 'glitter_amts': None, 'glitter_types': None,
+        'time_to_pour_hrs': None, 'time_to_pour_mins': None,
+        'pouring_time_hrs': None, 'pouring_time_mins': None,
+        'time_to_demold_hrs': None, 'time_to_demold_mins': None,
+        'result_scale': None, 'start_temp': None, 'start_temp_unit': None,
+        'end_temp': None, 'end_temp_unit': None, 'demold_temp': None,
+        'demold_temp_unit': None
     }
 
     # Grab the project id from the database for the project name given
@@ -607,6 +611,7 @@ def display(project):
 
     # Get the details for the project name given
     project_details = get_single(project_id[0])
+    print(project_details)
 
     # Iterate through the dictionary to add the values from the database for
     #   the project specified
