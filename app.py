@@ -28,6 +28,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Connect my app to my database
 DB.init_app(app)
+with app.app_context():
+    DB.create_all()
 
 # Ensure the templates are auto-reloaded
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -619,23 +621,25 @@ def display(project):
     return render_template('display.html', project=proj_dict)
 
 
-# Create a route to create the database
-@app.route('/rch_create_db_jmm')
-def create_db():
-    """
-    Backdoor to create the database
-    :return:
-    """
-    if not User().username:
-        # Create the database
-        DB.create_all()
-        DB.session.commit()  # Commit the changes
-        DB.session.close()  # Close the database connection
-
-    # Display a message on the home page
-    flash(f'The database has been created successfully!')
-    # Redirect to home page
-    return redirect('/')
+# # Create a route to create the database
+# @app.route('/rch_create_db_jmm')
+# def create_db():
+#     """
+#     Backdoor to create the database
+#     :return:
+#     """
+#     # if not User().username:
+#     #     # Create the database
+#     #     DB.create_all()
+#     #     DB.session.commit()  # Commit the changes
+#     #     DB.session.close()  # Close the database connection
+#     with app.app_context():
+#         DB.create_all()
+#
+#     # Display a message on the home page
+#     flash(f'The database has been created successfully!')
+#     # Redirect to home page
+#     return redirect('/')
 
 
 def errorhandler(e):
