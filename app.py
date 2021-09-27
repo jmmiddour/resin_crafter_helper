@@ -49,8 +49,7 @@ def after_request(response):
 # #   which is done by default with Flask
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = True
-app.config["SESSION_SQLALCHEMY"] = True
-app.config["SESSION_TYPE"] = "sqlalchemy"
+app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
