@@ -14,6 +14,7 @@ requests = "*"
 werkzeug = "*"
 psycopg2 = "*"
 gunicorn = "*"
+flask-session = "*"
 
 [requires]
 python_version = "3.8"
