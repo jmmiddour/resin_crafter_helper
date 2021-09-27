@@ -20,8 +20,8 @@ app = Flask(__name__)
 
 # Configure the database uri
 uri = getenv('DATABASE_URI')
-# if uri.startswith('postgres://'):
-#     uri = uri.replace("postgres://", "postgresql://", 1)
+if uri.startswith('postgres://'):
+    uri = uri.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -629,13 +629,13 @@ def create_db():
     Backdoor to create the database
     :return:
     """
-    # if not User().username:
-    #     # Create the database
-    #     DB.create_all()
-    #     DB.session.commit()  # Commit the changes
-    #     DB.session.close()  # Close the database connection
-    with app.app_context():
+    if not User().username:
+        # Create the database
         DB.create_all()
+        DB.session.commit()  # Commit the changes
+        DB.session.close()  # Close the database connection
+    # with app.app_context():
+    #     DB.create_all()
 
     # Display a message on the home page
     flash(f'The database has been created successfully!')
