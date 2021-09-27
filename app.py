@@ -606,7 +606,7 @@ def display(project):
 
     # Grab the project id from the database for the project name given
     projects = get_all(session.get("user_id"))
-    project_id = [row[:1] for row in projects if project in row[1]]
+    project_id = [row for row in projects if project in row[1]]
 
     # Get the details for the project name given
     project_details = get_single(project_id[0])
@@ -634,8 +634,6 @@ def create_db():
         DB.create_all()
         DB.session.commit()  # Commit the changes
         DB.session.close()  # Close the database connection
-    # with app.app_context():
-    #     DB.create_all()
 
     # Display a message on the home page
     flash(f'The database has been created successfully!')
