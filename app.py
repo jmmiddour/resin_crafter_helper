@@ -623,7 +623,7 @@ def display(project):
 
 
 # Create a route to create the database
-@app.route('/rch_create_db_jmm')
+@app.route('/rch_create_db_jmm', methods=['GET', 'POST'])
 def create_db():
     """
     Backdoor to create the database
