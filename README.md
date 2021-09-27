@@ -2,6 +2,8 @@
 
 A web-based application to help the resin crafter organize all project notes in one place.
 
+[Video Demonstration of working Application](https://youtu.be/86l4B5phzJM)
+
 ## The Problem
 As a resin crafter myself, I find myself in need of a way to organize my notes all in one place. When I experiment with different projects I like to take notes as to what I did. This way when I get a desired outcome I have a better chance to recreate it. I have talked to other resin crafters who have expressed their interested in having an application available like this as well.
 
