@@ -606,7 +606,7 @@ def display(project):
 
     # Grab the project id from the database for the project name given
     projects = get_all(session.get("user_id"))
-    project_id = [row for row in projects if project in row[1]]
+    project_id = [row[0] for row in projects if project in row[1]]
 
     # Get the details for the project name given
     project_details = get_single(project_id[0])
