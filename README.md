@@ -27,13 +27,7 @@ All dependencies are housed within the `Pipfile` in this repository. All you nee
 ## Deploying Locally
 Being that this application is a web-based Flask application, it can be deployed locally.
 
-If you are running this app on a `Mac` machine:
-- `FLASK_APP=app.py flask run`
-
-If you are running this app on a `Windows` machine:
-- `export FLASK_APP=app.py` or set `FLASK_APP=app.py`
-- If you want to run in dev mode `export FLASK_ENV=development`
-- Then `flask run`
+This application can simply be deployed locally using the `python app.py` command since I included the run functionally in the `app.py` file. This will also run it in the `developer` mode. If you would like to take it out of the `developer` mode, you can remove `debug=True` parameter from the `app.run()` code at the end of the file.
 
 ## Final Deployment
 
