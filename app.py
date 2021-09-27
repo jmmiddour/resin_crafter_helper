@@ -47,8 +47,8 @@ def after_request(response):
 # # Configure session to use filesystem (instead of signed cookies)
 # # Will store the session on the users disk vs digitially signed cookies,
 # #   which is done by default with Flask
-app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = True
+# app.config["SESSION_FILE_DIR"] = mkdtemp()
+app.config.from_object(__name__)
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
