@@ -225,10 +225,20 @@
                 <span>
                     Time from Combining to Pouring: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 </span>
-                {% if project.time_to_pour_mins != '' or project.time_to_pour_hrs %}
+                {% if project.time_to_pour_mins or project.time_to_pour_hrs %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ '%02d' % project.time_to_pour_hrs }} hours &nbsp; and &nbsp;
-                        {{ '%02d' % project.time_to_pour_mins }} minutes<br>
+                        {% if project.time_to_pour_hrs %}
+                            {{ '%02d' % project.time_to_pour_hrs }}
+                        {% else %}
+                            00
+                        {% endif %}
+                         hours &nbsp; and &nbsp;
+                        {% if project.time_to_pour_mins %}
+                        {{ '%02d' % project.time_to_pour_mins }}
+                        {% else %}
+                            00
+                        {% endif %}
+                         minutes<br>
                     </span>
 
                 {% else %}
@@ -243,10 +253,20 @@
                 <span>
                     Time it took to Pour Entire Project: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
                 </span>
-                {% if project.pouring_time_mins != '' or project.pouring_time_hrs %}
+                {% if project.pouring_time_mins or project.pouring_time_hrs %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ '%02d' % project.pouring_time_hrs }} hours &nbsp; and &nbsp;
-                        {{ '%02d' % project.pouring_time_mins }} minutes<br>
+                        {% if project.pouring_time_hrs %}
+                            {{ '%02d' % project.pouring_time_hrs }}
+                        {% else %}
+                            00
+                        {% endif %}
+                         hours &nbsp; and &nbsp;
+                        {% if project.pouring_time_mins %}
+                            {{ '%02d' % project.pouring_time_mins }}
+                        {% else %}
+                            00
+                        {% endif %}
+                         minutes<br>
                     </span>
 
                 {% else %}
@@ -261,10 +281,20 @@
                 <span>
                     Time from Completing Pouring to De-molding: &nbsp;&nbsp;
                 </span>
-                {% if project.time_to_demold_hrs != '' %}
+                {% if project.time_to_demold_hrs or project.time_to_demold_mins %}
                     <span style="font-weight: normal; font-size: large">
-                        {{ '%02d' % project.time_to_demold_hrs }} hours &nbsp; and &nbsp;
-                        {{ '%02d' % project.time_to_demold_mins }} minutes<br><br>
+                        {% if project.time_to_demold_hrs %}
+                            {{ '%02d' % project.time_to_demold_hrs }}
+                        {% else %}
+                            00
+                        {% endif %}
+                         hours &nbsp; and &nbsp;
+                        {% if project.time_to_demold_mins %}
+                            {{ '%02d' % project.time_to_demold_mins }}
+                        {% else %}
+                            00
+                        {% endif %}
+                         minutes<br><br>
                     </span>
 
                 {% else %}
