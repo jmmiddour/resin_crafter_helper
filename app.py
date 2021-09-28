@@ -2,13 +2,11 @@ from os import getenv
 from flask import Flask, render_template, request, session, redirect, flash
 from flask_session import Session
 from sqlalchemy import text
-from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from base64 import b64encode
-import psycopg2
 
-from db_model import DB, User, Project, Details
+from db_model import DB, User
 from queries import dup_user, add_user, get_user, get_last_ten, \
     add_new_project, dup_proj, get_all, del_rec, get_single, edit_project, \
     user_details, edit_user
@@ -18,8 +16,14 @@ from helpers import apology, login_required
 # Configure the application
 app = Flask(__name__)
 
-# Configure the database uri
+# Ensure the templates are auto-reloaded
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+"""
+Configure the database uri
+"""
 uri = getenv('DATABASE_URI')
+
 if uri.startswith('postgres://'):
     uri = uri.replace("postgres://", "postgresql://", 1)
 
@@ -28,14 +32,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Connect my app to my database
 DB.init_app(app)
-# with app.app_context():
-#     DB.create_all()
-
-# Ensure the templates are auto-reloaded
-app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
-# Ensure responses aren't cached
+# Ensure responses aren't cached after a specified time
 @app.after_request
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -44,42 +43,42 @@ def after_request(response):
     return response
 
 
-# # Configure session to use filesystem (instead of signed cookies)
-# # Will store the session on the users disk vs digitially signed cookies,
-# #   which is done by default with Flask
-# app.config["SESSION_FILE_DIR"] = mkdtemp()
+# Configure session to use filesystem (instead of signed cookies)
+# Will store the session on the users disk vs digitally signed cookies,
+#   which is done by default with Flask
 app.config.from_object(__name__)
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
-# Create a function to check that user is logged in
-def check_valid_login():
-    # Check to make sure the user is already logged in
-    if not session.get("user_id"):
-        # If not logged in, redirect the user to the login page
-        return redirect("/login")
-
-    return session.get('user_id')
-
-
 # Create the index route
 @app.route('/')
-@login_required
+# @login_required  # Decorator to ensure user is logged in
 def index():
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    """
+    The main route and the first thing that all users see
+    """
+    # Show the user the welcome page
+    return render_template('index.html')
 
+
+# Create the home route
+@app.route('/home')
+@login_required  # Decorator to ensure user is logged in
+def home():
+    """
+    The main route and the first thing that all users see
+    """
     # Get the user's first name from the database
     first = DB.engine.execute(text(
         'SELECT first FROM "user" WHERE id = :user_id'
     ), user_id=session.get("user_id")).one()
 
-    # Get the dataframe with the list of projects for the user
+    # Get a list of the last ten projects added by the user
     last_ten_projects = get_last_ten(session.get("user_id"))
 
-    # Show the user the index page
-    return render_template('index.html', project=last_ten_projects,
+    # Show the user their home page
+    return render_template('home.html', project=last_ten_projects,
                            user=first[0])
 
 
@@ -166,7 +165,7 @@ def register():
                 f'Your registration is complete and you have been logged in successfully!'
             )
             # Send the user to the portfolio page
-            return redirect("/")
+            return redirect("/home")
 
     else:  # Otherwise, sent a GET request, need to send to register form
         return render_template('register.html')
@@ -208,7 +207,7 @@ def login():
         #   project was successfully added to the database
         flash(f'You have been logged in successfully!')
         # Redirect user to home page
-        return redirect('/')
+        return redirect('/home')
 
     # User reached route via GET (as by clicking a link or via redirect)
     return render_template('login.html')
@@ -229,13 +228,13 @@ def logout():
 
 # Create a route for editing account information
 @app.route('/edit_act', methods=["GET", "POST"])
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def edit_act():
     """
     Functionality for user to edit their account details
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     # Create a dictionary to hold all parameters needed
     user_dict = {
@@ -295,13 +294,13 @@ def edit_act():
 
 # Create route for adding a project
 @app.route('/add', methods=["GET", "POST"])
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def add():
     """
     Functionality for the user to add a new project to their account
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     if request.method == "POST":
         # Create a dictionary to hold all parameters needed
@@ -372,7 +371,6 @@ def add():
                 proj_dict['res_img_type'] = res_pic.mimetype.split('/')[1]
 
             # Set the user_id parameter in the dictionary
-            print(f'Project Dict outside for loop: {proj_dict}')
             proj_dict['user_id'] = user_id
             # Add the new project to the database using function from queries.py
             add_new_project(proj_dict)
@@ -389,13 +387,13 @@ def add():
 
 # Create a route for removing a project
 @app.route('/remove', methods=["GET", "POST"])
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def remove():
     """
     Functionality for the user to remove a project from their account
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     # Query a list of all projects on the user's account
     projects = get_all(session.get("user_id"))
@@ -414,14 +412,14 @@ def remove():
 
 # Create a route for picking a project for editing
 @app.route('/pick_edit', methods=["GET", "POST"])
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def pick_edit():
     """
     Functionality for user to pick which project they want to edit that is
         already in their account.
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     # Create a list of project names for dropdown selection
     projects = get_all(session.get("user_id"))
@@ -437,13 +435,13 @@ def pick_edit():
 
 # Create a route for editing a project
 @app.route('/edit/<project>', methods=["GET", "POST"])
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def edit(project):
     """
     Functionality for user to edit a project already in their account
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     # Create a dictionary to hold all parameters needed
     proj_dict = {
@@ -521,13 +519,13 @@ def edit(project):
 
 # Create a route for displaying all projects
 @app.route('/all_projects')
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def all_projects():
     """
     Functionality to view all the projects currently in the user's account
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     # Get user's first name
     first = DB.engine.execute(text(
@@ -558,13 +556,13 @@ def all_projects():
 
 # Create route to select just one project
 @app.route('/select', methods=["GET", "POST"])
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def select():
     """
     Functionality to display just one project in the users account
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     # Create a list of project names for dropdown selection
     projects = get_all(session.get("user_id"))
@@ -580,13 +578,13 @@ def select():
 
 # Create route for display just one project
 @app.route('/display/<project>', methods=["GET", "POST"])
-@login_required
+@login_required  # Decorator to ensure user is logged in
 def display(project):
     """
     Functionality to display just one project in the users account
     """
-    # Check to make sure the user is already logged in
-    check_valid_login()
+    # # Check to make sure the user is already logged in
+    # check_valid_login()
 
     # Create a dictionary to hold all parameters needed
     proj_dict = {
