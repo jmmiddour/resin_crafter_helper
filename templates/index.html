@@ -5,41 +5,124 @@
 {% endblock %}
 
 {% block main %}
-    {% if session.user_id %}
-        <h1>Welcome Back {{ user }}!</h1><br>
-        <h4>Here are some details of your 10 most recently added projects.</h4><br>
-        <p>This is just a snapshot of the projects you have added.
-            You can view all the details of any project, add a new project,
-            edit an existing project, or delete a project. You can also view all of your
-            projects on one page.
-        </p><br>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Project Name</th>
-                <th>Resin Brand</th>
-                <th>Resin Type</th>
-                <th>Resin Amount</th>
-                <th>Measurement Unit</th>
-                <th>Color(s)</th>
-                <th>Glitter(s)</th>
-                <th>Results Scale</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for row in project %}
-                <tr>
-                    <td>{{ row.name }}</td>
-                    <td>{{ row.resin_brand }}</td>
-                    <td>{{ row.resin_type }}</td>
-                    <td>{{ row.amount }}</td>
-                    <td>{{ row.unit }}</td>
-                    <td>{{ row.colors }}</td>
-                    <td>{{ row.glitters }}</td>
-                    <td>{{ row.result_scale }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    {% if not session.user_id %}
+        <h1>
+            Welcome to
+            <span style="color: cornflowerblue">The </span>
+            <span style="color: #ea433b">Resin </span>
+            <span style="color: darkorange">Crafter's </span>
+            <span style="color: #2e944b" ">Helper</span>!
+        </h1><hr>
+
+        <h4>
+            Do you do resin crafts and like to take notes?
+        </h4><br>
+
+        <h5>
+            Maybe you want to recreate a project and can't remember
+            exactly what you did<br>and you have not been able to recreate
+            it yet?
+        </h5><br>
+
+        <div style="padding-left: 90px; padding-right: 90px">
+            As a resin crafter myself, I know how important it can be to take
+            notes during an experimental project. I think we can all agree
+            that resin is <em><strong>expensive</strong></em>, and resin
+            crafting can be a <em><strong>costly hobby</strong></em>. So
+            anything that we can do to save on cost can be worth its weight in
+            gold. Less waste will definitely help with this.
+            <br><br>
+            I watch a lot of YouTubers who do resin crafts and one thing I
+            noticed is that a lot of them do take notes and/or rewatch their
+            videos. So I decided to start taking notes when I do my projects
+            and it makes a world of difference when trying to recreate that
+            perfect pour. However, the problem is keeping all those notes
+            organized.
+            <br><br>
+            Then I started to search around to see if there was anything out
+            there that was specific to resin crafters for keeping all their
+            notes in one place. Much to my surprise, I could not find anything
+            that was already available. Then I had to do a final project for my
+            CS50 course at Harvard University and saw this as a perfect
+            opportunity to create something to help us all.
+        <br><br>
+            This is how the idea of <strong>
+            <span style="color: cornflowerblue">The </span>
+            <span style="color: #ea433b">Resin </span>
+            <span style="color: darkorange">Crafter's </span>
+            <span style="color: #2e944b" ">Helper</span></strong>
+            was born.
+            <br><br>
+            This great tool is accessible from any computer where you
+            have access to the internet.
+        <br><br>
+            This web-based application is loaded with some great features and I
+            plan on continuing to work on it to bring its user even more features.
+        </div><hr>
+
+        <div style="padding-left: 90px; padding-right: 90px">
+            <h5>Some of the current features already available are:</h5>
+            <dl style="margin-top: 16px">
+                <li>
+                    You can securely register for an account and log in
+                </li>
+                <li>
+                    Add a new project and upload an image of the mold and results
+                </li>
+                <li>
+                    Display all the details of just a single project
+                </li>
+                <li>
+                    View the details of all projects currently saved in your account
+                </li>
+                <li>
+                    Edit any or all details for a single project
+                </li>
+                <li>
+                    Delete a single project (this can not be undone)
+                </li>
+                <li>
+                    Edit your account details and change your password
+                </li>
+            </dl>
+        </div><hr>
+
+        <div style="padding-left: 90px; padding-right: 90px">
+            <h5>See this application in action:</h5>
+            <iframe width="600"
+                    height="350"
+                    src="https://www.youtube.com/embed/86l4B5phzJM"
+                    title="YouTube video player" frameborder="3"
+                    allow="accelerometer; autoplay; clipboard-write;
+                        encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div><hr>
+
+        <div style="padding-left: 90px; padding-right: 90px">
+            If you like what you see and think this will be a helpful tool
+            in your resin crafting...
+            <br><br>
+            <dl>
+                <li>
+                    Sign up for an account by clicking
+                    <a href="register.html">here</a> or on the "Register" link
+                </li>
+                <li>
+                    If you already have an account, log in
+                    <a href="login.html">here</a> or click the "Log In" link.
+                </li>
+            </dl>
+            <br>
+            If you have any questions or feedback, please feel free to contact
+            me at any of the links listed under the "Reach Out:" section below.
+            I always enjoy hearing from users on ways to better improve this
+            application. The best way to contact me is through
+            <a href="https://joannemiddour.com/contact/">My Portfolio Website
+                Contact Page</a> or via
+            <a href="https://www.linkedin.com/in/joanne-middour/">LinkedIn</a>.
+        </div>
+
     {% endif %}
+
 {% endblock %}
