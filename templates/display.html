@@ -103,7 +103,7 @@
 
                 <h5>Color(s):</h5><br>
 
-                {% if project.colors != None %}
+                {% if project.colors != '' %}
                     {% for color in project.colors.split(',') %}
                         <ul>
                             <li>{{ color }}</li>
@@ -119,7 +119,7 @@
 
                 <h5>Color Type(s):</h5><br>
 
-                {% if project.color_types != None %}
+                {% if project.color_types != '' %}
                     {% for color_type in project.color_types.split(',') %}
                         <ul>
                             <li>{{ color_type }}</li>
@@ -135,7 +135,7 @@
 
                 <h5>Color Amount(s):</h5><br>
 
-                {% if project.color_amts != None %}
+                {% if project.color_amts != '' %}
 
                     {% for camts in project.color_amts.split(',') %}
                         <ul>
@@ -158,7 +158,7 @@
 
                 <h5>Glitter(s):</h5><br>
 
-                {% if project.glitters != None %}
+                {% if project.glitters != '' %}
                     {% for glitter in project.glitters.split(',') %}
                         <ul>
                             <li>{{ glitter }}</li>
@@ -174,7 +174,7 @@
 
                 <h5>Glitter Type(s):</h5><br>
 
-                {% if project.color_types != None %}
+                {% if project.color_types != '' %}
                     {% for glitter_type in project.glitter_types.split(',') %}
                         <ul>
                             <li>{{ glitter_type }}</li>
@@ -189,7 +189,7 @@
                 {% endif %}<br>
 
                 <h5>Amount of Glitter(s):</h5><br>
-                {% if project.glitter_amts != None %}
+                {% if project.glitter_amts != '' %}
                     {% for gamt in project.glitter_amts.split(',') %}
                         <ul>
                             <li>{{ gamt }}</li>
