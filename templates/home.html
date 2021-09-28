@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    {% if session.user_id %}
+        <h1>Welcome Back {{ user }}!</h1><br>
+        <h4>Here are some details of your 10 most recently added projects.</h4><br>
+        <p>This is just a snapshot of the projects you have added.
+            You can view all the details of any project, add a new project,
+            edit an existing project, or delete a project. You can also view all of your
+            projects on one page.
+        </p><br>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Resin Brand</th>
+                <th>Resin Type</th>
+                <th>Resin Amount</th>
+                <th>Measurement Unit</th>
+                <th>Color(s)</th>
+                <th>Glitter(s)</th>
+                <th>Results Scale</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in project %}
+                <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.resin_brand }}</td>
+                    <td>{{ row.resin_type }}</td>
+                    <td>{{ row.amount }}</td>
+                    <td>{{ row.unit }}</td>
+                    <td>{{ row.colors }}</td>
+                    <td>{{ row.glitters }}</td>
+                    <td>{{ row.result_scale }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
